@@ -1,12 +1,12 @@
 const Menu = () => {
   return (
-    <nav className="py-4 w-5/6 mx-auto flex items-center justify-between">
+    <nav className="py-4 w-11/12 mx-auto flex items-center justify-between">
       <div>
-        <h1 className="text-3xl tracking-wide font-extrabold text-cyan-600">
+        <h1 className="text-3xl tracking-wide font-extrabold text-teal-600">
           QuaKer
         </h1>
       </div>
-      <button className="py-2 px-6 text-coolGray-600 border-coolGray-600 border rounded-full flex items-center">
+      <button className="py-2 px-6 text-teal-600 border-teal-600 border rounded-full flex items-center">
         <div className="h-7 w-7 mr-1">
           <svg
             xmlns="http://www.w3.org/2000/svg"
