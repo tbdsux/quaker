@@ -1,4 +1,4 @@
-import { FormEvent, useRef, useState } from 'react'
+import { useState } from 'react'
 import Router from 'next/router'
 import { useUser } from '../lib/hooks'
 
@@ -13,7 +13,7 @@ const Login = () => {
   const [errorMsg, setErrorMsg] = useState('')
   // const loginEmail = useRef(null)
 
-  async function handleSubmit(e) {
+  const handleSubmit = async (e) => {
     e.preventDefault()
 
     if (errorMsg) setErrorMsg('')
@@ -36,7 +36,7 @@ const Login = () => {
         body: JSON.stringify(body),
       })
       if (res.status === 200) {
-        Router.push('/user/dashboard')
+        Router.push('/user/dashboard/welcome')
       } else {
         throw new Error(await res.text())
       }
@@ -71,7 +71,7 @@ const Login = () => {
               </div>
               <button
                 type="submit"
-                className="mt-4 py-3 px-6 bg-gray-500 hover:bg-gray-600 text-white rounded-full text-lg font-semibold tracking-wide"
+                className="mt-4 py-3 px-6 bg-teal-500 hover:bg-teal-600 text-white rounded-full text-lg font-semibold tracking-wide"
               >
                 Sign Up / Log In
               </button>

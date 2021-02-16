@@ -9,7 +9,7 @@ export class UserModel {
     /* Step 4.3: Create a user in FaunaDB */
     return adminClient.query(
       q.Create(q.Collection('users'), {
-        data: { email },
+        data: { email: email, name: '' },
       }),
     )
   }
@@ -19,6 +19,20 @@ export class UserModel {
     return adminClient
       .query(q.Get(q.Match(q.Index('users_by_email'), email)))
       .catch(() => undefined)
+  }
+
+  async updateUserName(name, email) {
+    // Update the user's name if not set / updated.
+    return adminClient
+      .query(
+        q.Update(
+          q.Select(['ref'], q.Get(q.Match(q.Index('users_by_email'), email))),
+          {
+            data: { name: name },
+          },
+        ),
+      )
+      .catch((e) => undefined)
   }
 
   async obtainFaunaDBToken(user) {

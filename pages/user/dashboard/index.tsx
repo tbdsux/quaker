@@ -1,3 +1,4 @@
+import Router from 'next/router'
 import { useUser } from '../../../lib/hooks'
 
 import Layout from '../../../components/Layout'
@@ -5,6 +6,10 @@ import Menu from '../../../components/dashboard/Menu'
 
 const UserDashboard = () => {
   const user = useUser({ redirectTo: '/login' })
+
+  if (user && user.name === '') {
+    Router.push('/user/dashboard/welcome')
+  }
 
   return (
     <Layout title="Dashboard | QuaKer">
