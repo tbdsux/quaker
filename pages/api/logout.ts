@@ -1,8 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { magic } from '../../lib/magic'
-import { removeTokenCookie } from '../../lib/auth-cookies'
-import { getLoginSession } from '../../lib/auth'
-import { UserModel } from '../../lib/models/user-model'
+import { magic } from '@lib/magic'
+import { removeTokenCookie } from '@lib/auth-cookies'
+import { getLoginSession } from '@lib/auth'
+import { UserModel } from '@lib/models/user-model'
 
 export default async function logout(
   req: NextApiRequest,

@@ -1,8 +1,8 @@
 import Router from 'next/router'
-import { useUser } from '../../../lib/hooks'
+import { useUser } from '@lib/hooks'
 
-import Layout from '../../../components/Layout'
-import Menu from '../../../components/dashboard/Menu'
+import Layout from '@components/Layout'
+import Menu from '@components/dashboard/Menu'
 
 const UserDashboard = () => {
   const user = useUser({ redirectTo: '/login' })

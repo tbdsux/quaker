@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { UserModel } from '../../../lib/models/user-model'
+import { UserModel } from '@lib/models/user-model'
 
 export default async function profile(
   req: NextApiRequest,

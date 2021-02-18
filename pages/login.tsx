@@ -1,11 +1,10 @@
 import { useState } from 'react'
 import Router from 'next/router'
-import { useUser } from '../lib/hooks'
-
 import { Magic } from 'magic-sdk'
 
-import Layout from '../components/Layout'
-import Menu from '../components/Menu'
+import { useUser } from '@lib/hooks'
+import Layout from '@components/Layout'
+import Menu from '@components/Menu'
 
 const Login = () => {
   useUser({ redirectTo: '/user/dashboard', redirectIfFound: true })

@@ -1,7 +1,7 @@
 import Router from 'next/router'
 import { FormEvent, useRef } from 'react'
-import Layout from '../../../components/Layout'
-import { useUser } from '../../../lib/hooks'
+import Layout from '@components/Layout'
+import { useUser } from '@lib/hooks'
 
 const UserWelcome = () => {
   const user = useUser({ redirectTo: '/login' })

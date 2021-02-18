@@ -1,7 +1,7 @@
 import Image from 'next/image'
 
-import Layout from '../components/Layout'
-import Menu from '../components/Menu'
+import Layout from '@components/Layout'
+import Menu from '@components/Menu'
 
 const Home = () => {
   return (

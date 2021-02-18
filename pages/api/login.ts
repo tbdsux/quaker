@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { magic } from '../../lib/magic'
-import { setLoginSession } from '../../lib/auth'
-import { UserModel } from '../../lib/models/user-model'
+import { magic } from '@lib/magic'
+import { setLoginSession } from '@lib/auth'
+import { UserModel } from '@lib/models/user-model'
 
 export default async function login(req: NextApiRequest, res: NextApiResponse) {
   try {
