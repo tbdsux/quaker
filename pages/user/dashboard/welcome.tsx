@@ -6,6 +6,8 @@ import { useUser } from '@lib/hooks'
 const UserWelcome = () => {
   const user = useUser({ redirectTo: '/login' })
 
+  console.log(user)
+
   // redirect to dashboard if user has name set
   if (user && user.name !== '') {
     Router.push('/user/dashboard')
@@ -18,7 +20,7 @@ const UserWelcome = () => {
 
     const body = {
       name: setNameInput.current.value,
-      email: user.data.email,
+      email: user.email,
     }
 
     try {

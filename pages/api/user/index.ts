@@ -11,7 +11,7 @@ export default async function user(req: NextApiRequest, res: NextApiResponse) {
     const user = await userModel.getUserByEmail(session.email)
 
     res.status(200).json({ user: user.data || null })
+  } else {
+    res.status(404).json({ user: null })
   }
-
-  res.status(404).json({ user: null })
 }
