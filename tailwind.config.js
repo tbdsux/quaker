@@ -17,6 +17,8 @@ module.exports = {
       transparent: 'transparent',
       current: 'currentColor',
 
+      bland: 'rgba(0, 0, 0, 0.5)',
+
       // add all colors
       ...colors,
     },

@@ -6,11 +6,11 @@ import { useUser } from '@lib/hooks'
 const UserWelcome = () => {
   const user = useUser({ redirectTo: '/login' })
 
-  console.log(user)
-
   // redirect to dashboard if user has name set
-  if (user && user.name !== '') {
-    Router.push('/user/dashboard')
+  if (user) {
+    if (user.name) {
+      Router.push('/user/dashboard')
+    }
   }
 
   const setNameInput = useRef<HTMLInputElement>(null)

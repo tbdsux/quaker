@@ -1,4 +1,4 @@
-const Menu = () => {
+const Menu = ({ username }) => {
   return (
     <nav className="py-4 w-5/6 mx-auto flex items-center justify-between">
       <div>
@@ -6,7 +6,7 @@ const Menu = () => {
           QuaKer
         </h1>
       </div>
-      <ul className="flex">
+      <ul className="flex items-center">
         <li className="px-8 text-lg">
           <a
             href="#"
@@ -30,6 +30,11 @@ const Menu = () => {
           >
             Sign Out
           </a>
+        </li>
+        <li className="ml-8 px-10 text-lg rounded border border-teal-600 text-center">
+          <p title={username} className="tracking-wide text-teal-600">
+            {username}
+          </p>
         </li>
       </ul>
     </nav>
