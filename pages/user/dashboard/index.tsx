@@ -55,9 +55,7 @@ const UserDashboard = () => {
         .then((data) => {
           setModal(false)
 
-          console.log(data)
-
-          Router.push(`/user/forms/${data.form.ref.id}`)
+          Router.push(`/user/forms/${data.form['@ref'].id}`)
         })
     } catch (e) {
       console.error(e)
