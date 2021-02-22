@@ -1,3 +1,5 @@
+import Link from 'next/link'
+
 const Menu = ({ username }) => {
   return (
     <nav className="py-4 w-5/6 mx-auto flex items-center justify-between">
@@ -8,20 +10,11 @@ const Menu = ({ username }) => {
       </div>
       <ul className="flex items-center">
         <li className="px-8 text-lg">
-          <a
-            href="#"
-            className="font-bold tracking-wide text-coolGray-700 hover:text-teal-500"
-          >
-            Forms
-          </a>
-        </li>
-        <li className="px-8 text-lg">
-          <a
-            href="#"
-            className="font-bold tracking-wide text-coolGray-700 hover:text-teal-500"
-          >
-            Stats
-          </a>
+          <Link href="/user/dashboard">
+            <a className="font-bold tracking-wide text-coolGray-700 hover:text-teal-500">
+              Forms
+            </a>
+          </Link>
         </li>
         <li className="pl-8 text-lg">
           <a
