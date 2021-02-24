@@ -24,17 +24,17 @@ const UserWelcome = () => {
     }
 
     try {
-      const res = await fetch('/api/user/profile', {
+      await fetch('/api/user/profile', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(body),
+      }).then((res) => {
+        if (res.status === 200) {
+          Router.push('/user/dashboard')
+        }
       })
-
-      if (res.status === 200) {
-        Router.push('/user/dashboard')
-      }
     } catch (e) {
       console.error(e)
     }

@@ -7,18 +7,19 @@ import Layout from '@components/Layout'
 import Menu from '@components/dashboard/Menu'
 import Modal from '@components/Modal'
 import Link from 'next/link'
-
-const fetcher = (url: string) =>
-  fetch(url)
-    .then((r) => r.json())
-    .then((data) => {
-      return data?.forms.data || null
-    })
+import { fetcher } from '@lib/fetcher'
 
 const UserDashboard = () => {
   const user = useUser({ redirectTo: '/login' })
   const formName = useRef<HTMLInputElement>(null)
   const { data } = useSWR('/api/user/forms', fetcher)
+  const [forms, setForms] = useState([])
+
+  useEffect(() => {
+    if (data) {
+      setForms(data?.forms.data)
+    }
+  }, [data])
 
   const [modal, setModal] = useState(false)
 
@@ -40,7 +41,7 @@ const UserDashboard = () => {
 
     // TODO: DIRECT-IMPLEMENTATION
     try {
-      const res = await fetch('/api/user/forms/create', {
+      await fetch('/api/user/forms/create', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -52,10 +53,10 @@ const UserDashboard = () => {
             return result.json()
           }
         })
-        .then((data) => {
+        .then((res) => {
           setModal(false)
 
-          Router.push(`/user/forms/${data.form['@ref'].id}`)
+          Router.push(`/user/forms/${res.form.ref['@ref'].id}`)
         })
     } catch (e) {
       console.error(e)
@@ -127,9 +128,9 @@ const UserDashboard = () => {
               </div>
 
               <hr className="my-6" />
-              {data && (
+              {forms && (
                 <div className="flex flex-col">
-                  {data.map((form) => (
+                  {forms.map((form) => (
                     <Link
                       key={form.ts}
                       href={`/user/forms/${form.ref['@ref'].id}`}

@@ -5,27 +5,35 @@ export class FormsModel {
   generateFormId() {
     const linkId = nanoid(8)
 
-    return adminClient
-      .query(q.Get(q.Match(q.Index('form_by_linkId'), linkId)))
-      .then(() => this.generateFormId())
-      .catch(() => linkId)
+    // const check = adminClient
+    //   .query(q.Get(q.Match(q.Index('form_by_linkId'), linkId)))
+    //   .then(() => true)
+    //   .catch(() => false)
+
+    // if (check) {
+    //   return this.generateFormId()
+    // }
+
+    return linkId
   }
 
   async createForm(user: string, name: string) {
     const linkId = this.generateFormId()
 
     // create a form with defined fields
-    return adminClient.query(
-      q.Create(q.Collection('forms'), {
-        data: {
-          user: user,
-          name: name,
-          fields: [],
-          linkId: linkId,
-          createdDate: new Date().toISOString(),
-        },
-      }),
-    )
+    return adminClient
+      .query(
+        q.Create(q.Collection('forms'), {
+          data: {
+            user: user,
+            name: name,
+            fields: [],
+            linkId: linkId,
+            createdDate: new Date().toISOString(),
+          },
+        }),
+      )
+      .catch(() => undefined)
   }
 
   async queryForms(user: string) {
@@ -35,5 +43,23 @@ export class FormsModel {
         q.Lambda((x) => q.Get(x)),
       ),
     )
+  }
+
+  // getFormById gets the form by it's 'ref-id' [this is more efficient]
+  async getFormById(formId: string) {
+    return adminClient
+      .query(q.Get(q.Ref(q.Collection('forms'), formId)))
+      .catch(() => undefined)
+  }
+
+  // updateFormFieldsByID updates the form's fields
+  async updateFormFieldsByID(id: string, fields: object[]) {
+    return adminClient
+      .query(
+        q.Update(q.Ref(q.Collection('forms'), id), {
+          data: { fields: fields },
+        }),
+      )
+      .catch(() => undefined)
   }
 }
