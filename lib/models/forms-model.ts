@@ -62,4 +62,11 @@ export class FormsModel {
       )
       .catch(() => undefined)
   }
+
+  // getFormByLinkId gets the form by its linkid
+  async getFormByLinkId(formLink: string) {
+    return adminClient
+      .query(q.Get(q.Match(q.Index('form_by_linkId'), formLink)))
+      .catch(() => undefined)
+  }
 }
