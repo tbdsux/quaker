@@ -7,7 +7,11 @@ import Menu from '@components/dashboard/Menu'
 import Modal from '@components/Modal'
 import { useUser } from '@lib/hooks'
 import { formData } from '@utils/form-data'
-import FieldType from '@components/dashboard/FormsFieldType'
+
+interface FieldData {
+  question: string
+  type: string
+}
 
 const ModifyForm = () => {
   // MAIN STATES
@@ -32,18 +36,41 @@ const ModifyForm = () => {
   // FORM FIELD STATES
   const [fieldType, setFieldType] = useState('field-type')
   const [updated, setUpdated] = useState(false)
+  const [modifyMode, setModifyMode] = useState(false)
+  const [modifyField, setModifyField] = useState<FieldData>(Object)
   const fieldQuestion = useRef<HTMLInputElement>(null)
   // END FORM FIELD STATES
 
-  // MAIN FUNCTIONS
+  // ====> MAIN FUNCTIONS
   const handleAddFormField = () => {
-    const fieldData = {
+    const fieldData: FieldData = {
       question: fieldQuestion.current.value,
       type: fieldType,
     }
 
     setFieldModal(false)
     setFormFields([...formFields, fieldData])
+    setUpdated(true)
+  }
+
+  const handleCloseModalForm = () => {
+    setModifyMode(false)
+    setFieldType('field-type')
+  }
+
+  const handleModifyFormField = (fd: FieldData) => {
+    const fieldData: FieldData = {
+      question: fieldQuestion.current.value,
+      type: fieldType,
+    }
+    const index = formFields.indexOf(fd)
+    const f = formFields
+
+    f.splice(index, 1)
+    f.splice(index, 0, fieldData)
+
+    setFieldModal(false)
+    setFormFields(f)
     setUpdated(true)
   }
 
@@ -64,7 +91,7 @@ const ModifyForm = () => {
       })
     }
   }, [updated, formFields, formid])
-  // END MAIN FUNCTIONS
+  // ====> END MAIN FUNCTIONS
 
   return (
     <>
@@ -73,11 +100,12 @@ const ModifyForm = () => {
           <Modal
             open={fieldModal}
             modal={setFieldModal}
+            onModalClose={() => handleCloseModalForm()}
             modalClass="w-1/2 mx-auto rounded-md"
           >
             <div>
               <h3 className="text-3xl font-extrabold tracking-wide text-coolGray-700 underline">
-                Add a field
+                {modifyMode ? 'Edit field' : 'Add a field'}
               </h3>
               <div className="mt-8">
                 <div className="flex items-center text-lg">
@@ -91,7 +119,7 @@ const ModifyForm = () => {
                     onChange={(e: ChangeEvent<HTMLSelectElement>) => {
                       setFieldType(e.target.value)
                     }}
-                    value={fieldType}
+                    defaultValue={fieldType}
                   >
                     <option value="field-type" disabled>
                       Choose a field type...
@@ -119,6 +147,7 @@ const ModifyForm = () => {
                           type="text"
                           placeholder="Your question..."
                           className="py-2 border px-4 rounded-md"
+                          defaultValue={modifyMode ? modifyField.question : ''}
                         />
                       </div>
                     </div>
@@ -137,6 +166,7 @@ const ModifyForm = () => {
                           type="text"
                           placeholder="Your question..."
                           className="py-2 border px-4 rounded-md"
+                          defaultValue={modifyMode ? modifyField.question : ''}
                         />
                       </div>
                     </div>
@@ -151,14 +181,26 @@ const ModifyForm = () => {
                 </div>
 
                 <div className="flex items-center justify-end mt-4">
+                  {modifyMode ? (
+                    <button
+                      onClick={() => handleModifyFormField(modifyField)}
+                      className="py-2 px-6 mx-1 rounded-md bg-teal-500 hover:bg-teal-600 text-white"
+                    >
+                      Modify
+                    </button>
+                  ) : (
+                    <button
+                      onClick={handleAddFormField}
+                      className="py-2 px-6 mx-1 rounded-md bg-teal-500 hover:bg-teal-600 text-white"
+                    >
+                      Add
+                    </button>
+                  )}
                   <button
-                    onClick={handleAddFormField}
-                    className="py-2 px-6 mx-1 rounded-md bg-teal-500 hover:bg-teal-600 text-white"
-                  >
-                    Add
-                  </button>
-                  <button
-                    onClick={() => setFieldModal(false)}
+                    onClick={() => {
+                      setFieldModal(false)
+                      handleCloseModalForm()
+                    }}
                     className="py-2 px-6 mx-1 rounded-md bg-gray-500 hover:bg-gray-600 text-white"
                   >
                     Cancel
@@ -196,11 +238,24 @@ const ModifyForm = () => {
                 {formFields.map((field) => (
                   <div
                     key={formFields.indexOf(field)}
-                    className="flex flex-col my-3"
+                    className="flex flex-col my-3 p-2"
                   >
-                    <p className="text-lg tracking-wide mb-1">
-                      {field.question}
-                    </p>
+                    <div className="flex items-center justify-between">
+                      <p className="text-lg tracking-wide mb-1">
+                        {field.question}
+                      </p>
+                      <button
+                        onClick={() => {
+                          setFieldModal(true)
+                          setModifyMode(true)
+                          setModifyField(field)
+                          setFieldType(field.type)
+                        }}
+                        className="text-sm underline tracking-wide"
+                      >
+                        modify
+                      </button>
+                    </div>
                     {field.type == 'user-input' ? (
                       <div>
                         <input

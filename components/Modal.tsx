@@ -6,6 +6,7 @@ interface ModalData {
   modalClass?: string
   modalOverlayClass?: string
   modal: Dispatch<SetStateAction<boolean>>
+  onModalClose: VoidFunction
 }
 
 const Modal = ({
@@ -14,6 +15,7 @@ const Modal = ({
   modalClass,
   modalOverlayClass,
   modal,
+  onModalClose,
 }: ModalData) => {
   return (
     <>
@@ -24,7 +26,10 @@ const Modal = ({
           <div className={`bg-white relative p-8 ${modalClass}`} role="dialog">
             {children}
             <button
-              onClick={() => modal(false)}
+              onClick={() => {
+                onModalClose()
+                modal(false)
+              }}
               title="Close Modal"
               className="h-8 w-8 absolute top-2 right-2"
             >
