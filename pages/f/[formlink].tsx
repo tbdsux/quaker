@@ -17,6 +17,12 @@ const FormLinkRender = () => {
     return <div>Loading...</div>
   }
 
+  // RENDER 404 IF NO FIELDS DEFINED IN THE FORM
+  // THIS IS TO PREVENT UNNECESSARY SUBMISSIONS WITH NO FIELDS
+  if (data && data.fields.length < 1) {
+    return <Error statusCode={404} />
+  }
+
   // ===> MAIN FUNCTIONS
   const handleSubmitForm = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()

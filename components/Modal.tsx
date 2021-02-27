@@ -6,7 +6,7 @@ interface ModalData {
   modalClass?: string
   modalOverlayClass?: string
   modal: Dispatch<SetStateAction<boolean>>
-  onModalClose: VoidFunction
+  onModalClose?: VoidFunction
 }
 
 const Modal = ({
