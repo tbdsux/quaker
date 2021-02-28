@@ -1,8 +1,9 @@
-import { useRouter } from 'next/router'
+import Router, { useRouter } from 'next/router'
 import Error from 'next/error'
 import useSWR from 'swr'
 import Layout from '@components/Layout'
 import { FormEvent } from 'react'
+import { answerFormData } from '@utils/form-data'
 
 const FormLinkRender = () => {
   const router = useRouter()
@@ -24,8 +25,39 @@ const FormLinkRender = () => {
   }
 
   // ===> MAIN FUNCTIONS
-  const handleSubmitForm = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmitForm = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+
+    var answers = {}
+
+    // extract form answers
+    data.fields.map((field) => {
+      answers[field.question] = e.currentTarget[field.question]['value']
+    })
+
+    // form submit
+    const answerData: answerFormData = {
+      formlinkId: Array.isArray(formlink) ? formlink.join() : formlink,
+      answers: answers,
+    }
+
+    await fetch('/api/forms/submit', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(answerData),
+    })
+      .then((res) => {
+        if (res.ok) {
+          Router.push('/f/submit-success')
+        } else {
+          return <Error statusCode={res.status} />
+        }
+      })
+      .catch((e) => {
+        console.error(e)
+      })
   }
 
   return (
@@ -52,7 +84,7 @@ const FormLinkRender = () => {
                   <div>
                     <input
                       className="py-2 text-lg border px-4 rounded-md w-full"
-                      name={field.question.toLowerCase()}
+                      name={field.question}
                       type="text"
                     />
                   </div>

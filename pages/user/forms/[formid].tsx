@@ -58,6 +58,14 @@ const ModifyForm = () => {
     setFieldType('field-type')
   }
 
+  const handleRemoveFormField = (fd: FieldData) => {
+    var tf = formFields
+    tf.splice(tf.indexOf(fd), 1)
+
+    setFormFields(tf)
+    setUpdated(true)
+  }
+
   const handleModifyFormField = (fd: FieldData) => {
     const fieldData: FieldData = {
       question: fieldQuestion.current.value,
@@ -244,17 +252,25 @@ const ModifyForm = () => {
                       <p className="text-lg tracking-wide mb-1">
                         {field.question}
                       </p>
-                      <button
-                        onClick={() => {
-                          setFieldModal(true)
-                          setModifyMode(true)
-                          setModifyField(field)
-                          setFieldType(field.type)
-                        }}
-                        className="text-sm underline tracking-wide"
-                      >
-                        modify
-                      </button>
+                      <div>
+                        <button
+                          onClick={() => {
+                            setFieldModal(true)
+                            setModifyMode(true)
+                            setModifyField(field)
+                            setFieldType(field.type)
+                          }}
+                          className="mx-1 text-sm underline tracking-wide"
+                        >
+                          modify
+                        </button>
+                        <button
+                          onClick={() => handleRemoveFormField(field)}
+                          className="mx-1 text-sm font-light tracking-wide text-red-500 hover:text-red-600"
+                        >
+                          remove
+                        </button>
+                      </div>
                     </div>
                     {field.type == 'user-input' ? (
                       <div>

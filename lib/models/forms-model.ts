@@ -1,3 +1,4 @@
+import { answerFormData } from '@utils/form-data'
 import { nanoid } from 'nanoid'
 import { q, adminClient } from '../faunadb'
 
@@ -67,6 +68,16 @@ export class FormsModel {
   async getFormByLinkId(formLink: string) {
     return adminClient
       .query(q.Get(q.Match(q.Index('form_by_linkId'), formLink)))
+      .catch(() => undefined)
+  }
+
+  async submitFormAnswer(data: answerFormData) {
+    return adminClient
+      .query(
+        q.Create(q.Collection('answers'), {
+          data: data,
+        }),
+      )
       .catch(() => undefined)
   }
 }

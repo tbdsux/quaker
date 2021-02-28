@@ -5,3 +5,8 @@ export interface formData {
   linkId: string
   createdDate: string
 }
+
+export interface answerFormData {
+  formlinkId: string
+  answers: Object
+}
