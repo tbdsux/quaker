@@ -1,11 +1,9 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { getLoginSession } from '@lib/auth'
 import { FormsModel } from '@lib/models/forms-model'
+import methodHandler from '@utils/middleware/method-handler'
 
-export default async function update_formFields(
-  req: NextApiRequest,
-  res: NextApiResponse,
-) {
+async function update_formFields(req: NextApiRequest, res: NextApiResponse) {
   const session = await getLoginSession(req)
 
   if (session) {
@@ -22,3 +20,5 @@ export default async function update_formFields(
     res.status(404).json({ form: null })
   }
 }
+
+export default methodHandler(update_formFields, ['PUT'])

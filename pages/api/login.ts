@@ -2,8 +2,9 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import { magic } from '@lib/magic'
 import { setLoginSession } from '@lib/auth'
 import { UserModel } from '@lib/models/user-model'
+import methodHandler from '@utils/middleware/method-handler'
 
-export default async function login(req: NextApiRequest, res: NextApiResponse) {
+async function login(req: NextApiRequest, res: NextApiResponse) {
   try {
     const didToken = req.headers.authorization.substr(7)
     const { email, issuer } = await magic.users.getMetadataByToken(didToken)
@@ -22,3 +23,5 @@ export default async function login(req: NextApiRequest, res: NextApiResponse) {
     res.status(error.status || 500).end(error.message)
   }
 }
+
+export default methodHandler(login, ['POST'])

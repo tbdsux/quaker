@@ -42,7 +42,7 @@ const UserDashboard = () => {
     // TODO: DIRECT-IMPLEMENTATION
     try {
       await fetch('/api/user/forms/create', {
-        method: 'POST',
+        method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },

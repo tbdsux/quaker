@@ -1,10 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { UserModel } from '@lib/models/user-model'
+import methodHandler from '@utils/middleware/method-handler'
 
-export default async function profile(
-  req: NextApiRequest,
-  res: NextApiResponse,
-) {
+async function profile(req: NextApiRequest, res: NextApiResponse) {
   try {
     const userModel = new UserModel()
 
@@ -18,3 +16,5 @@ export default async function profile(
     res.status(error.status || 500).end(error.message)
   }
 }
+
+export default methodHandler(profile, ['POST', 'PUT'])

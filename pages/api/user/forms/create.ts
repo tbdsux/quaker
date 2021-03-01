@@ -1,11 +1,9 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { getLoginSession } from '@lib/auth'
 import { FormsModel } from '@lib/models/forms-model'
+import methodHandler from '@utils/middleware/method-handler'
 
-export default async function create_form(
-  req: NextApiRequest,
-  res: NextApiResponse,
-) {
+async function create_form(req: NextApiRequest, res: NextApiResponse) {
   const session = await getLoginSession(req)
 
   if (session) {
@@ -19,3 +17,5 @@ export default async function create_form(
     res.status(404).json({ form: null })
   }
 }
+
+export default methodHandler(create_form, ['PUT'])

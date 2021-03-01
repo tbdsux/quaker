@@ -86,7 +86,7 @@ const ModifyForm = () => {
   useEffect(() => {
     if (updated) {
       fetch('/api/user/forms/update/fields', {
-        method: 'POST',
+        method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },

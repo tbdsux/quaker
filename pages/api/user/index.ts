@@ -1,8 +1,9 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { getLoginSession } from '@lib/auth'
 import { UserModel } from '@lib/models/user-model'
+import methodHandler from '@utils/middleware/method-handler'
 
-export default async function user(req: NextApiRequest, res: NextApiResponse) {
+async function user(req: NextApiRequest, res: NextApiResponse) {
   const session = await getLoginSession(req)
 
   if (session) {
@@ -17,3 +18,5 @@ export default async function user(req: NextApiRequest, res: NextApiResponse) {
     res.status(404).json({ user: null })
   }
 }
+
+export default methodHandler(user, ['GET'])

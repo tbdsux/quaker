@@ -1,8 +1,9 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { FormsModel } from '@lib/models/forms-model'
 import { answerFormData } from '@utils/form-data'
+import methodHandler from '@utils/middleware/method-handler'
 
-export default async function user(req: NextApiRequest, res: NextApiResponse) {
+async function submit_formAnswer(req: NextApiRequest, res: NextApiResponse) {
   const data: answerFormData = req.body
 
   if (data) {
@@ -25,3 +26,5 @@ export default async function user(req: NextApiRequest, res: NextApiResponse) {
     res.status(400).end('Bad Request')
   }
 }
+
+export default methodHandler(submit_formAnswer, ['POST'])

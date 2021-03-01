@@ -1,7 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { FormsModel } from '@lib/models/forms-model'
+import methodHandler from '@utils/middleware/method-handler'
 
-export default async function user(req: NextApiRequest, res: NextApiResponse) {
+async function get_form(req: NextApiRequest, res: NextApiResponse) {
   var {
     query: { formlink },
   } = req
@@ -20,3 +21,5 @@ export default async function user(req: NextApiRequest, res: NextApiResponse) {
     }
   }
 }
+
+export default methodHandler(get_form, ['GET'])
