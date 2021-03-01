@@ -1,20 +1,20 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { UserModel } from '@lib/models/user-model'
 import methodHandler from '@utils/middleware/method-handler'
+import sessionHandler from '@utils/middleware/session-handler'
 
 async function profile(req: NextApiRequest, res: NextApiResponse) {
-  try {
-    const userModel = new UserModel()
+  const userModel = new UserModel()
 
-    // set user's name
-    const user = await userModel.updateUserName(req.body.name, req.body.email)
+  // set user's name
+  const user = await userModel.updateUserName(req.body.name, req.body.email)
 
-    if (user) {
-      res.status(200).send({ done: true })
-    }
-  } catch (error) {
-    res.status(error.status || 500).end(error.message)
+  // query result is undefined
+  if (!user) {
+    return res.status(500).end()
   }
+
+  return res.status(200).send({ done: true })
 }
 
-export default methodHandler(profile, ['POST', 'PUT'])
+export default methodHandler(sessionHandler(profile), ['POST', 'PUT'])

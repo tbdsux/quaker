@@ -14,11 +14,12 @@ async function get_form(req: NextApiRequest, res: NextApiResponse) {
 
     const form = await formsModel.getFormByLinkId(formlink)
 
-    if (form) {
-      res.status(200).json(form.data)
-    } else {
-      res.status(404).json({ error: 'Unknown FORM Link' })
+    // query result is undefined
+    if (!form) {
+      return res.status(404).end(`Unknown FormID ${formlink}`)
     }
+
+    return res.status(200).json(form.data)
   }
 }
 
