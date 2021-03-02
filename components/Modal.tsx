@@ -27,7 +27,9 @@ const Modal = ({
             {children}
             <button
               onClick={() => {
-                onModalClose()
+                {
+                  onModalClose ? onModalClose() : null
+                }
                 modal(false)
               }}
               title="Close Modal"

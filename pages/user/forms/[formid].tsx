@@ -23,14 +23,6 @@ const ModifyForm = () => {
 
   const [fieldModal, setFieldModal] = useState(false)
 
-  const { data } = useSWR(`/api/user/forms/get/${formid}`)
-
-  useEffect(() => {
-    if (data) {
-      setForm(data.form?.data)
-      setFormFields(data.form?.data.fields)
-    }
-  }, [data])
   // END MAIN STATES
 
   // FORM FIELD STATES
@@ -100,6 +92,29 @@ const ModifyForm = () => {
     }
   }, [updated, formFields, formid])
   // ====> END MAIN FUNCTIONS
+
+  // UTIL FUNCTIONS, .THIS ONLY WORKS IF IT IS AT THE END
+  const { data } = useSWR(`/api/user/forms/get/${formid}`)
+
+  useEffect(() => {
+    if (data) {
+      setForm(data.form?.data)
+      setFormFields(data.form?.data.fields)
+    }
+  }, [data])
+
+  // show loading if form's data is still not available
+  if (!data && user) {
+    return (
+      <Layout title="Dashboard | QuaKer">
+        <Menu username={user.name} />
+        <hr />
+        <div className="w-5/6 mx-auto">
+          <p>Loading form...</p>
+        </div>
+      </Layout>
+    )
+  }
 
   return (
     <>

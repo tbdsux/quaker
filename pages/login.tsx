@@ -10,7 +10,6 @@ const Login = () => {
   useUser({ redirectTo: '/user/dashboard', redirectIfFound: true })
 
   const [errorMsg, setErrorMsg] = useState('')
-  // const loginEmail = useRef(null)
 
   const handleSubmit = async (e) => {
     e.preventDefault()

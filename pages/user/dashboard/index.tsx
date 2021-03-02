@@ -27,8 +27,19 @@ const UserDashboard = () => {
     if (!user.name) {
       Router.push('/user/dashboard/welcome')
     }
-    // const { data, error } = useSWR('/api/user/forms', fetcher)
-    // console.log(data)
+  }
+
+  // loading info while trying to get all forms
+  if (!data && user) {
+    return (
+      <Layout title="Dashboard | QuaKer">
+        <Menu username={user.name} />
+        <hr />
+        <div className="w-5/6 mx-auto">
+          <p>Loading forms...</p>
+        </div>
+      </Layout>
+    )
   }
 
   const userCreateForm = async (e: FormEvent) => {
