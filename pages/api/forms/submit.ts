@@ -9,7 +9,7 @@ async function submit_formAnswer(req: NextApiRequest, res: NextApiResponse) {
   if (data) {
     const formsModel = new FormsModel()
 
-    const formExists = await formsModel.getFormByLinkId(data.formlinkId)
+    const formExists = await formsModel.getFormById(data.formid)
 
     if (formExists) {
       const form = await formsModel.submitFormAnswer(data)

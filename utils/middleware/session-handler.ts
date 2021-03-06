@@ -8,7 +8,7 @@ const sessionHandler = (
   const session = await getLoginSession(req)
 
   if (!session) {
-    return res.status(403).end('User not logged in!')
+    return res.status(403).json({})
   }
 
   return handler(req, res)

@@ -7,6 +7,8 @@ export interface formData {
 }
 
 export interface answerFormData {
-  formlinkId: string
+  formid: string
+  date: Date
   answers: Object
+  responseID: string
 }

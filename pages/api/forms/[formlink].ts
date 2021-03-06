@@ -7,6 +7,11 @@ async function get_form(req: NextApiRequest, res: NextApiResponse) {
     query: { formlink },
   } = req
 
+  // this is to prevent unconditional render of 404 page on the main page
+  if (formlink == 'undefined') {
+    return res.status(200).end(null)
+  }
+
   if (Array.isArray(formlink)) {
     res.status(400).json({ error: 'Bad Request' })
   } else {
@@ -19,7 +24,7 @@ async function get_form(req: NextApiRequest, res: NextApiResponse) {
       return res.status(404).end(`Unknown FormID ${formlink}`)
     }
 
-    return res.status(200).json(form.data)
+    return res.status(200).json(form)
   }
 }
 

@@ -17,7 +17,7 @@ const UserDashboard = () => {
 
   useEffect(() => {
     if (data) {
-      setForms(data?.forms.data)
+      setForms(data?.forms?.data)
     }
   }, [data])
 

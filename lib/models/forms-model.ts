@@ -80,4 +80,15 @@ export class FormsModel {
       )
       .catch(() => undefined)
   }
+
+  async getFormResponses(formid: string) {
+    return adminClient
+      .query(
+        q.Map(
+          q.Paginate(q.Match(q.Index('answers_byFormId'), formid)),
+          q.Lambda((x) => q.Get(x)),
+        ),
+      )
+      .catch(() => undefined)
+  }
 }

@@ -1,5 +1,6 @@
 import { useState, useEffect, ChangeEvent, FormEvent, useRef } from 'react'
 import { useRouter } from 'next/router'
+import Link from 'next/link'
 import useSWR from 'swr'
 
 import Layout from '@components/Layout'
@@ -7,8 +8,9 @@ import Menu from '@components/dashboard/Menu'
 import Modal from '@components/Modal'
 import { useUser } from '@lib/hooks'
 import { formData } from '@utils/form-data'
+import { fetcher } from '@lib/fetcher'
 
-interface FieldData {
+export interface FieldData {
   question: string
   type: string
 }
@@ -94,7 +96,7 @@ const ModifyForm = () => {
   // ====> END MAIN FUNCTIONS
 
   // UTIL FUNCTIONS, .THIS ONLY WORKS IF IT IS AT THE END
-  const { data } = useSWR(`/api/user/forms/get/${formid}`)
+  const { data } = useSWR(`/api/user/forms/get/${formid}`, fetcher)
 
   useEffect(() => {
     if (data) {
@@ -250,6 +252,11 @@ const ModifyForm = () => {
                 <button className="py-2 border px-6 rounded-md mx-1">
                   Settings
                 </button>
+                <Link href={`/user/forms/${formid}/responses`}>
+                  <a className="py-2 border px-6 rounded-md bg-gray-100 hover:bg-gray-200">
+                    Responses
+                  </a>
+                </Link>
               </div>
             </div>
 
