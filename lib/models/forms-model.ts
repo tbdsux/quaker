@@ -91,4 +91,10 @@ export class FormsModel {
       )
       .catch(() => undefined)
   }
+
+  async removeResponseByID(refid: string) {
+    return adminClient
+      .query(q.Delete(q.Ref(q.Collection('answers'), refid)))
+      .catch(() => undefined)
+  }
 }

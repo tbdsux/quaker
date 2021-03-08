@@ -24,8 +24,11 @@ interface resp {
 const FormReponses = () => {
   const user = useUser({ redirectTo: '/login' })
 
-  const [view, setView] = useState(false)
+  const [view, setView] = useState<boolean>(false)
   const [viewResponse, setViewResponse] = useState<answerFormData>(null)
+
+  const [delRefID, setDelRefID] = useState<string>(null)
+  const [deleted, setDeleted] = useState<boolean>(false)
 
   // get {formid} from router
   const router = useRouter()
@@ -37,6 +40,39 @@ const FormReponses = () => {
     setView(true)
     setViewResponse(resp)
   }
+
+  const handleRemoveResponse = async (resp: resp) => {
+    var tf = responses
+    tf.splice(tf.indexOf(resp), 1)
+
+    setDelRefID(resp.ref['@ref'].id)
+    setResponses(tf)
+    setDeleted(true)
+  }
+
+  useEffect(() => {
+    if (deleted) {
+      fetch('/api/user/forms/get/responses/remove', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          formid: formid,
+          respID: delRefID,
+        }),
+      })
+        .then((r) => r.json())
+        .then((res) => {
+          if (res.deleted) {
+            setDeleted(false)
+            setDelRefID(null)
+          } else {
+            // item was not deleted
+          }
+        })
+    }
+  }, [deleted, delRefID, formid])
 
   // get form info
   const { form, formOk }: formStat = getForm(
@@ -100,23 +136,25 @@ const FormReponses = () => {
               <div className="py-4 px-8">
                 {responses.length > 0 ? (
                   <ul>
-                    {responses.reverse().map((resp: resp) => (
+                    {responses.map((resp: resp) => (
                       <li
                         key={responses.indexOf(resp)}
                         className="p-4 border rounded-md my-2"
                       >
-                        <button
-                          onClick={() => handleViewResponse(resp.data)}
-                          className="w-full flex items-center justify-between"
-                        >
-                          <p>{resp.data.responseID}</p>
+                        <div className="w-full flex items-center justify-between">
+                          <button onClick={() => handleViewResponse(resp.data)}>
+                            {resp.data.responseID}
+                          </button>
                           <div className="flex items-center">
                             <p>{new Date(resp.data.date).toUTCString()}</p>
-                            <button className="ml-2 border p-1 text-sm font-light">
+                            <button
+                              onClick={() => handleRemoveResponse(resp)}
+                              className="ml-2 border p-1 text-sm font-light"
+                            >
                               delete
                             </button>
                           </div>
-                        </button>
+                        </div>
                       </li>
                     ))}
                   </ul>
