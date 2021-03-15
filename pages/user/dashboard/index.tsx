@@ -140,15 +140,22 @@ const UserDashboard = () => {
 
               <hr className="my-6" />
               {forms && (
-                <div className="flex flex-col">
+                <div className="flex flex-col w-5/6 mx-auto my-8">
                   {forms.map((form) => (
                     <Link
                       key={form.ts}
                       href={`/user/forms/${form.ref['@ref'].id}`}
                     >
-                      <a className="py-2 bg-teal-400 my-1 px-4 rounded-md text-white text-lg">
-                        <p>{form.data.name}</p>
-                        <p>{JSON.stringify(form)}</p>
+                      <a
+                        className="py-4 border border-teal-500 hover:bg-teal-500 text-teal-900 hover:text-white my-2 px-4 rounded-md flex items-center justify-between"
+                        title={`View form ${form.data.name}`}
+                      >
+                        <p className="text-xl font-bold tracking-wide">
+                          {form.data.name}
+                        </p>
+                        <p className="text-lg">
+                          {new Date(form.data.createdDate).toUTCString()}
+                        </p>
                       </a>
                     </Link>
                   ))}
