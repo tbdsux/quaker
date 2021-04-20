@@ -1,119 +1,121 @@
-import { FormEvent, useEffect, useRef, useState } from 'react'
-import Router, { useRouter } from 'next/router'
-import Error from 'next/error'
-import useSWR from 'swr'
-import Layout from '@components/Layout'
-import RenderForm from '@components/RenderForm'
-import { answerFormData, formData } from '@utils/form-data'
-import { fetcher } from '@lib/fetcher'
-import { FieldData } from 'pages/user/forms/[formid]'
-import { nanoid } from 'nanoid'
+import { FormEvent, useEffect, useRef, useState } from "react";
+import Router, { useRouter } from "next/router";
+import Error from "next/error";
+import useSWR from "swr";
+import Layout from "@components/Layout";
+import RenderForm from "@components/RenderForm";
+import { answerFormData, formData } from "@utils/form-data";
+import { fetcher } from "@lib/fetcher";
+
+import { nanoid } from "nanoid";
+import { FieldDataProps } from "types/forms";
 
 const FormLinkRender = () => {
-  const router = useRouter()
-  const { formlink } = router.query
-  const { data, error } = useSWR(`/api/forms/${formlink}`, fetcher)
-  const submitBtn = useRef<HTMLButtonElement>(null)
-  const [form, setForm] = useState<formData>(null)
+	const router = useRouter();
+	const { formlink } = router.query;
+	const { data, error } = useSWR(
+		formlink ? `/api/forms/${formlink}` : null,
+		fetcher
+	);
+	const submitBtn = useRef<HTMLButtonElement>(null);
+	const [form, setForm] = useState<formData>(null);
 
-  // ===> MAIN FUNCTIONS
-  const handleSubmitForm = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
+	// ===> MAIN FUNCTIONS
+	const handleSubmitForm = async (e: FormEvent<HTMLFormElement>) => {
+		e.preventDefault();
 
-    submitBtn.current.innerText = 'Submitting...'
-    submitBtn.current.disabled = true
+		submitBtn.current.innerText = "Submitting...";
+		submitBtn.current.disabled = true;
 
-    var answers = {}
+		var answers = {};
 
-    // extract form answers
-    form.fields.map((field: FieldData) => {
-      answers[field.question] = e.currentTarget[field.question]['value']
-    })
+		// extract form answers
+		form.fields.map((field: FieldDataProps) => {
+			answers[field.question] = e.currentTarget[field.question]["value"];
+		});
 
-    // form submit
-    const answerData: answerFormData = {
-      formid: data.ref['@ref'].id,
-      date: new Date(),
-      answers: answers,
-      responseID: nanoid(40),
-    }
+		// form submit
+		const answerData: answerFormData = {
+			formid: data.ref["@ref"].id,
+			date: new Date(),
+			answers: answers,
+			responseID: nanoid(40),
+		};
 
-    await fetch('/api/forms/submit', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(answerData),
-    })
-      .then((res) => {
-        if (res.ok) {
-          Router.push('/f/submit-success')
-        } else {
-          return <Error statusCode={res.status} />
-        }
-      })
-      .catch((e) => {
-        console.error(e)
-      })
-  }
+		await fetch("/api/forms/submit", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify(answerData),
+		})
+			.then((res) => {
+				if (res.ok) {
+					Router.push("/f/submit-success");
+				} else {
+					return <Error statusCode={res.status} />;
+				}
+			})
+			.catch((e) => {
+				console.error(e);
+			});
+	};
 
-  // UTILS
-  useEffect(() => {
-    if (data) {
-      setForm(data.data)
-    }
-  }, [data])
+	// UTILS
+	useEffect(() => {
+		if (data) {
+			setForm(data.data);
+		}
+	}, [data]);
 
-  if (!formlink) {
-    return null
-  }
+	if (error) {
+		return <Error statusCode={404} />;
+	}
 
-  if (error) {
-    return <Error statusCode={404} />
-  }
+	if (!data) {
+		return <div>Loading...</div>;
+	}
 
-  if (!data) {
-    return <div>Loading...</div>
-  }
+	// RENDER 404 IF NO FIELDS DEFINED IN THE FORM
+	// THIS IS TO PREVENT UNNECESSARY SUBMISSIONS WITH NO FIELDS
+	if (form && form.fields.length < 1) {
+		return <Error statusCode={404} />;
+	}
 
-  // RENDER 404 IF NO FIELDS DEFINED IN THE FORM
-  // THIS IS TO PREVENT UNNECESSARY SUBMISSIONS WITH NO FIELDS
-  if (form && form.fields.length < 1) {
-    return <Error statusCode={404} />
-  }
+	return (
+		<>
+			{form && (
+				<Layout title={`${form.name} - Quaker Forms`}>
+					<div className="py-14 w-5/6 mx-auto">
+						<header className="text-center">
+							<h3 className="text-4xl font-black tracking-wide">
+								{form.name}
+							</h3>
+						</header>
 
-  return (
-    <>
-      {form && (
-        <Layout title={`${form.name} - Quaker Forms`}>
-          <div className="py-14 w-5/6 mx-auto">
-            <header className="text-center">
-              <h3 className="text-4xl font-black tracking-wide">{form.name}</h3>
-            </header>
+						<hr className="my-4" />
 
-            <hr className="my-4" />
+						{/* render form fields */}
+						<div className="w-1/2 mx-auto">
+							<form onSubmit={handleSubmitForm}>
+								<RenderForm formfields={form.fields} />
 
-            {/* render form fields */}
-            <div className="w-1/2 mx-auto">
-              <form onSubmit={handleSubmitForm}>
-                <RenderForm formfields={form.fields} />
+								<div className="mt-6">
+									<button
+										ref={submitBtn}
+										type="submit"
+										className="py-2 px-8 bg-teal-500 hover:bg-teal-600 text-white rounded-md text-lg"
+									>
+										Submit
+									</button>
+								</div>
+							</form>
+						</div>
+					</div>
+				</Layout>
+			)}
+		</>
+	);
+};
 
-                <div className="mt-6">
-                  <button
-                    ref={submitBtn}
-                    type="submit"
-                    className="py-2 px-8 bg-teal-500 hover:bg-teal-600 text-white rounded-md text-lg"
-                  >
-                    Submit
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
-        </Layout>
-      )}
-    </>
-  )
-}
-
-export default FormLinkRender
+export default FormLinkRender;

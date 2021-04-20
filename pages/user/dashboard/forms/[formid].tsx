@@ -9,11 +9,8 @@ import Modal from '@components/Modal'
 import { useUser } from '@lib/hooks'
 import { formData } from '@utils/form-data'
 import { fetcher } from '@lib/fetcher'
-
-export interface FieldData {
-  question: string
-  type: string
-}
+import { Loading } from '@components/Loading'
+import { FieldDataProps } from 'types/forms'
 
 const ModifyForm = () => {
   // MAIN STATES
@@ -31,13 +28,13 @@ const ModifyForm = () => {
   const [fieldType, setFieldType] = useState('field-type')
   const [updated, setUpdated] = useState(false)
   const [modifyMode, setModifyMode] = useState(false)
-  const [modifyField, setModifyField] = useState<FieldData>(Object)
+  const [modifyField, setModifyField] = useState<FieldDataProps>(Object)
   const fieldQuestion = useRef<HTMLInputElement>(null)
   // END FORM FIELD STATES
 
   // ====> MAIN FUNCTIONS
   const handleAddFormField = () => {
-    const fieldData: FieldData = {
+    const fieldData: FieldDataProps = {
       question: fieldQuestion.current.value,
       type: fieldType,
     }
@@ -52,7 +49,7 @@ const ModifyForm = () => {
     setFieldType('field-type')
   }
 
-  const handleRemoveFormField = (fd: FieldData) => {
+  const handleRemoveFormField = (fd: FieldDataProps) => {
     var tf = formFields
     tf.splice(tf.indexOf(fd), 1)
 
@@ -60,8 +57,8 @@ const ModifyForm = () => {
     setUpdated(true)
   }
 
-  const handleModifyFormField = (fd: FieldData) => {
-    const fieldData: FieldData = {
+  const handleModifyFormField = (fd: FieldDataProps) => {
+    const fieldData: FieldDataProps = {
       question: fieldQuestion.current.value,
       type: fieldType,
     }
@@ -108,13 +105,7 @@ const ModifyForm = () => {
   // show loading if form's data is still not available
   if (!data && user) {
     return (
-      <Layout title="Dashboard | QuaKer">
-        <Menu username={user.name} />
-        <hr />
-        <div className="w-5/6 mx-auto">
-          <p>Loading form...</p>
-        </div>
-      </Layout>
+      <Loading />
     )
   }
 
@@ -235,7 +226,7 @@ const ModifyForm = () => {
             </div>
           </Modal>
 
-          <Menu username={user.name} />
+          <Menu />
 
           <div className="w-4/5 mx-auto py-12">
             <div className="flex items-center justify-between">
