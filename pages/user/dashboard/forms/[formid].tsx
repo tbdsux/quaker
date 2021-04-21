@@ -1,77 +1,77 @@
-import { useState, useEffect, ChangeEvent, FormEvent, useRef } from 'react'
-import { useRouter } from 'next/router'
-import Link from 'next/link'
-import useSWR from 'swr'
+import { useState, useEffect, ChangeEvent, FormEvent, useRef } from 'react';
+import { useRouter } from 'next/router';
+import Link from 'next/link';
+import useSWR from 'swr';
 
-import Layout from '@components/Layout'
-import Menu from '@components/dashboard/Menu'
-import Modal from '@components/Modal'
-import { useUser } from '@lib/hooks'
-import { formData } from '@utils/form-data'
-import { fetcher } from '@lib/fetcher'
-import { Loading } from '@components/Loading'
-import { FieldDataProps } from 'types/forms'
+import Layout from '@components/Layout';
+import Menu from '@components/dashboard/Menu';
+import Modal from '@components/Modal';
+import { formData } from '@utils/form-data';
+import { fetcher } from '@lib/fetcher';
+import { Loading } from '@components/Loading';
+import { FieldDataProps } from 'types/forms';
+import { useUser } from '@lib/wrapper/useUser';
 
 const ModifyForm = () => {
   // MAIN STATES
-  const user = useUser({ redirectTo: '/login' })
-  const router = useRouter()
-  const { formid } = router.query
-  const [form, setForm] = useState<formData>()
-  const [formFields, setFormFields] = useState([])
+  const user = useUser();
+  const router = useRouter();
+  const { formid } = router.query;
+  const [form, setForm] = useState<formData>();
+  const [formFields, setFormFields] = useState([]);
 
-  const [fieldModal, setFieldModal] = useState(false)
+  const [fieldModal, setFieldModal] = useState(false);
 
   // END MAIN STATES
 
   // FORM FIELD STATES
-  const [fieldType, setFieldType] = useState('field-type')
-  const [updated, setUpdated] = useState(false)
-  const [modifyMode, setModifyMode] = useState(false)
-  const [modifyField, setModifyField] = useState<FieldDataProps>(Object)
-  const fieldQuestion = useRef<HTMLInputElement>(null)
+  const [fieldType, setFieldType] = useState('field-type');
+  const [updated, setUpdated] = useState(false);
+  const [modifyMode, setModifyMode] = useState(false);
+  const [modifyField, setModifyField] = useState<FieldDataProps>(Object);
+  const fieldQuestion = useRef<HTMLInputElement>(null);
   // END FORM FIELD STATES
 
   // ====> MAIN FUNCTIONS
   const handleAddFormField = () => {
     const fieldData: FieldDataProps = {
       question: fieldQuestion.current.value,
-      type: fieldType,
-    }
+      type: fieldType
+    };
 
-    setFieldModal(false)
-    setFormFields([...formFields, fieldData])
-    setUpdated(true)
-  }
+    setFieldModal(false);
+    setFormFields([...formFields, fieldData]);
+    setUpdated(true);
+  };
 
   const handleCloseModalForm = () => {
-    setModifyMode(false)
-    setFieldType('field-type')
-  }
+    setModifyMode(false);
+    setFieldType('field-type');
+  };
 
   const handleRemoveFormField = (fd: FieldDataProps) => {
-    var tf = formFields
-    tf.splice(tf.indexOf(fd), 1)
+    var tf = formFields;
+    tf.splice(tf.indexOf(fd), 1);
 
-    setFormFields(tf)
-    setUpdated(true)
-  }
+    setFormFields(tf);
+    setUpdated(true);
+  };
 
   const handleModifyFormField = (fd: FieldDataProps) => {
     const fieldData: FieldDataProps = {
       question: fieldQuestion.current.value,
-      type: fieldType,
-    }
-    const index = formFields.indexOf(fd)
-    const f = formFields
+      type: fieldType
+    };
+    const index = formFields.indexOf(fd);
+    const f = formFields;
 
-    f.splice(index, 1)
-    f.splice(index, 0, fieldData)
+    f.splice(index, 1);
+    f.splice(index, 0, fieldData);
 
-    setFieldModal(false)
-    setFormFields(f)
-    setUpdated(true)
-  }
+    setFieldModal(false);
+    setFormFields(f);
+    setUpdated(true);
+  };
 
   // update form fields (call api)
   useEffect(() => {
@@ -79,34 +79,32 @@ const ModifyForm = () => {
       fetch('/api/user/forms/update/fields', {
         method: 'PUT',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({
           formid: formid,
-          fields: formFields,
-        }),
+          fields: formFields
+        })
       }).then(() => {
-        setUpdated(false)
-      })
+        setUpdated(false);
+      });
     }
-  }, [updated, formFields, formid])
+  }, [updated, formFields, formid]);
   // ====> END MAIN FUNCTIONS
 
   // UTIL FUNCTIONS, .THIS ONLY WORKS IF IT IS AT THE END
-  const { data } = useSWR(`/api/user/forms/get/${formid}`, fetcher)
+  const { data } = useSWR(`/api/user/forms/get/${formid}`, fetcher);
 
   useEffect(() => {
     if (data) {
-      setForm(data.form?.data)
-      setFormFields(data.form?.data.fields)
+      setForm(data.form?.data);
+      setFormFields(data.form?.data.fields);
     }
-  }, [data])
+  }, [data]);
 
   // show loading if form's data is still not available
   if (!data && user) {
-    return (
-      <Loading />
-    )
+    return <Loading />;
   }
 
   return (
@@ -133,7 +131,7 @@ const ModifyForm = () => {
                     id=""
                     className="py-2 px-4 rounded-md bg-gray-100"
                     onChange={(e: ChangeEvent<HTMLSelectElement>) => {
-                      setFieldType(e.target.value)
+                      setFieldType(e.target.value);
                     }}
                     defaultValue={fieldType}
                   >
@@ -154,9 +152,7 @@ const ModifyForm = () => {
                         User Input
                       </h2>
                       <div className="flex flex-col w-5/6 mx-auto">
-                        <label htmlFor="field-question">
-                          Please enter the question to ask...
-                        </label>
+                        <label htmlFor="field-question">Please enter the question to ask...</label>
                         <input
                           ref={fieldQuestion}
                           name="field-question"
@@ -173,9 +169,7 @@ const ModifyForm = () => {
                         Text Input
                       </h2>
                       <div className="flex flex-col w-5/6 mx-auto">
-                        <label htmlFor="field-question">
-                          Please enter the question to ask...
-                        </label>
+                        <label htmlFor="field-question">Please enter the question to ask...</label>
                         <input
                           ref={fieldQuestion}
                           name="field-question"
@@ -214,8 +208,8 @@ const ModifyForm = () => {
                   )}
                   <button
                     onClick={() => {
-                      setFieldModal(false)
-                      handleCloseModalForm()
+                      setFieldModal(false);
+                      handleCloseModalForm();
                     }}
                     className="py-2 px-6 mx-1 rounded-md bg-gray-500 hover:bg-gray-600 text-white"
                   >
@@ -240,10 +234,8 @@ const ModifyForm = () => {
                 >
                   Add Field
                 </button>
-                <button className="py-2 border px-6 rounded-md mx-1">
-                  Settings
-                </button>
-                <Link href={`/user/forms/${formid}/responses`}>
+                <button className="py-2 border px-6 rounded-md mx-1">Settings</button>
+                <Link href={`/user/dashboard/forms/${formid}/responses`}>
                   <a className="py-2 border px-6 rounded-md bg-gray-100 hover:bg-gray-200">
                     Responses
                   </a>
@@ -257,21 +249,16 @@ const ModifyForm = () => {
               <h4 className="mb-4 ml-4">Preview: </h4>
               <div className="w-2/3 mx-auto">
                 {formFields.map((field) => (
-                  <div
-                    key={formFields.indexOf(field)}
-                    className="flex flex-col my-3 p-2"
-                  >
+                  <div key={formFields.indexOf(field)} className="flex flex-col my-3 p-2">
                     <div className="flex items-center justify-between">
-                      <p className="text-lg tracking-wide mb-1">
-                        {field.question}
-                      </p>
+                      <p className="text-lg tracking-wide mb-1">{field.question}</p>
                       <div>
                         <button
                           onClick={() => {
-                            setFieldModal(true)
-                            setModifyMode(true)
-                            setModifyField(field)
-                            setFieldType(field.type)
+                            setFieldModal(true);
+                            setModifyMode(true);
+                            setModifyField(field);
+                            setFieldType(field.type);
                           }}
                           className="mx-1 text-sm underline tracking-wide"
                         >
@@ -287,10 +274,7 @@ const ModifyForm = () => {
                     </div>
                     {field.type == 'user-input' ? (
                       <div>
-                        <input
-                          type="text"
-                          className="py-2 px-4 border rounded-md w-full"
-                        />
+                        <input type="text" className="py-2 px-4 border rounded-md w-full" />
                       </div>
                     ) : field.type == 'text-input' ? (
                       <div>
@@ -305,7 +289,7 @@ const ModifyForm = () => {
         </Layout>
       )}
     </>
-  )
-}
+  );
+};
 
-export default ModifyForm
+export default ModifyForm;
