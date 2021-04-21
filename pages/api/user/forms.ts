@@ -3,20 +3,20 @@ import { getLoginSession } from '@lib/auth';
 import { FormsModel } from '@lib/models/forms-model';
 import methodHandler from '@utils/middleware/method-handler';
 import sessionHandler from '@utils/middleware/session-handler';
-import { getTokenFromSession } from '@lib/hooks/getToken';
 
-async function update_formFields(req: NextApiRequest, res: NextApiResponse) {
-  const token = await getTokenFromSession(req);
+async function query_forms(req: NextApiRequest, res: NextApiResponse) {
+  const { token } = await getLoginSession(req);
+
   // query db info
   const formsModel = new FormsModel(token);
-  const form = formsModel.updateFormFieldsByID(req.body.formid, req.body.fields);
+  const forms = await formsModel.queryUserForms();
 
   // query result is undefined
-  if (!form) {
+  if (!forms) {
     return res.status(500).end();
   }
 
-  return res.status(200).json({ form: form || null });
+  return res.status(200).json({ forms: forms || null });
 }
 
-export default methodHandler(sessionHandler(update_formFields), ['PUT']);
+export default methodHandler(sessionHandler(query_forms), ['GET']);

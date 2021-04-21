@@ -1,12 +1,22 @@
-import { answerFormData } from '@utils/form-data'
-import { nanoid } from 'nanoid'
-import { q, adminClient } from '../faunadb'
+import { answerFormData } from '@utils/form-data';
+import { AnswerDataFormProps } from '@utils/types/answers';
+import { Client, Expr } from 'faunadb';
+import { nanoid } from 'nanoid';
+import { q, getClient } from '../faunadb';
 
 export class FormsModel {
-  generateFormId() {
-    const linkId = nanoid(8)
+  _token: string;
+  _client: Client;
 
-    // const check = adminClient
+  constructor(token: string) {
+    this._token = token;
+    this._client = getClient(token);
+  }
+
+  generateFormId() {
+    const linkId = nanoid(8);
+
+    // const check = this._client
     //   .query(q.Get(q.Match(q.Index('form_by_linkId'), linkId)))
     //   .then(() => true)
     //   .catch(() => false)
@@ -15,86 +25,86 @@ export class FormsModel {
     //   return this.generateFormId()
     // }
 
-    return linkId
+    return linkId;
   }
 
-  async createForm(user: string, name: string) {
-    const linkId = this.generateFormId()
+  async createForm(name: string) {
+    const linkId = this.generateFormId();
 
     // create a form with defined fields
-    return adminClient
+    return this._client
       .query(
         q.Create(q.Collection('forms'), {
           data: {
-            user: user,
+            owner: q.CurrentIdentity(), // reference to current user
             name: name,
             fields: [],
             linkId: linkId,
-            createdDate: new Date().toISOString(),
-          },
-        }),
+            createdDate: new Date().toISOString()
+          }
+        })
       )
-      .catch(() => undefined)
+      .catch(() => undefined);
   }
 
-  async queryForms(user: string) {
-    return adminClient.query(
+  async queryUserForms() {
+    return this._client.query(
       q.Map(
-        q.Paginate(q.Match(q.Index('get_forms_by_email'), user)),
-        q.Lambda((x) => q.Get(x)),
-      ),
-    )
+        q.Paginate(q.Match(q.Index('forms_by_userRef'), q.CurrentIdentity())),
+        q.Lambda((x) => q.Get(x))
+      )
+    );
   }
 
   // getFormById gets the form by it's 'ref-id' [this is more efficient]
   async getFormById(formId: string) {
-    return adminClient
-      .query(q.Get(q.Ref(q.Collection('forms'), formId)))
-      .catch(() => undefined)
+    return this._client.query(q.Get(q.Ref(q.Collection('forms'), formId))).catch(() => undefined);
+  }
+
+  async getFormByRef(ref: Expr) {
+    return this._client.query(q.Get(ref));
   }
 
   // updateFormFieldsByID updates the form's fields
   async updateFormFieldsByID(id: string, fields: object[]) {
-    return adminClient
+    return this._client
       .query(
         q.Update(q.Ref(q.Collection('forms'), id), {
-          data: { fields: fields },
-        }),
+          data: { fields: fields }
+        })
       )
-      .catch(() => undefined)
+      .catch(() => undefined);
   }
 
   // getFormByLinkId gets the form by its linkid
   async getFormByLinkId(formLink: string) {
-    return adminClient
+    return this._client
       .query(q.Get(q.Match(q.Index('form_by_linkId'), formLink)))
-      .catch(() => undefined)
+      .catch(() => undefined);
   }
 
-  async submitFormAnswer(data: answerFormData) {
-    return adminClient
+  async submitFormAnswer(data: AnswerDataFormProps) {
+    return this._client
       .query(
         q.Create(q.Collection('answers'), {
-          data: data,
-        }),
+          data: data
+        })
       )
-      .catch(() => undefined)
+      .catch(() => undefined);
   }
 
-  async getFormResponses(formid: string) {
-    return adminClient
+  async getFormResponsesByRef(form: Expr) {
+    return this._client
       .query(
         q.Map(
-          q.Paginate(q.Match(q.Index('answers_byFormId'), formid)),
-          q.Lambda((x) => q.Get(x)),
-        ),
+          q.Paginate(q.Match(q.Index('answers_by_formRef'), form)),
+          q.Lambda((x) => q.Get(x))
+        )
       )
-      .catch(() => undefined)
+      .catch(() => undefined);
   }
 
-  async removeResponseByID(refid: string) {
-    return adminClient
-      .query(q.Delete(q.Ref(q.Collection('answers'), refid)))
-      .catch(() => undefined)
+  async removeResponseByRef(responseRef: Expr) {
+    return this._client.query(q.Delete(responseRef)).catch(() => undefined);
   }
 }

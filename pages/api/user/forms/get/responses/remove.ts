@@ -1,13 +1,15 @@
-import type { NextApiRequest, NextApiResponse } from 'next'
-import { FormsModel } from '@lib/models/forms-model'
-import methodHandler from '@utils/middleware/method-handler'
-import sessionHandler from '@utils/middleware/session-handler'
-import { getForm } from '@utils/form'
+import type { NextApiRequest, NextApiResponse } from 'next';
+import { FormsModel } from '@lib/models/forms-model';
+import methodHandler from '@utils/middleware/method-handler';
+import sessionHandler from '@utils/middleware/session-handler';
+import { getForm } from '@utils/form';
+import { getTokenFromSession } from '@lib/hooks/getToken';
+import { GET_REF } from 'fauna/ref';
 
 async function remove_response(req: NextApiRequest, res: NextApiResponse) {
   const {
-    body: { formid, respID },
-  } = req
+    body: { formid, respID }
+  } = req;
 
   // TODO: validate formid
   // issue: THIS CREATES ANOTHER FORMSMODEL
@@ -17,11 +19,13 @@ async function remove_response(req: NextApiRequest, res: NextApiResponse) {
   // }
 
   // query db info
-  const formsModel = new FormsModel()
+  const token = await getTokenFromSession(req);
+  const formsModel = new FormsModel(token);
+  const responseRef = GET_REF('answers', respID);
 
-  const formResponses = await formsModel.removeResponseByID(respID)
+  const formResponses = await formsModel.removeResponseByRef(responseRef);
 
-  return res.status(200).json({ deleted: formResponses ? true : false })
+  return res.status(200).json({ deleted: formResponses ? true : false });
 }
 
-export default methodHandler(sessionHandler(remove_response), ['PUT'])
+export default methodHandler(sessionHandler(remove_response), ['PUT']);

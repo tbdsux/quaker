@@ -1,48 +1,55 @@
-import { useState } from 'react'
-import Router from 'next/router'
-import { Magic } from 'magic-sdk'
+import { useState } from 'react';
+import Router from 'next/router';
+import { Magic } from 'magic-sdk';
 
-import { useUser } from '@lib/hooks'
-import Layout from '@components/Layout'
-import Menu from '@components/Menu'
+import Layout from '@components/Layout';
+import Menu from '@components/Menu';
 
-const Login = () => {
-  useUser({ redirectTo: '/user/dashboard', redirectIfFound: true })
+import { useSession } from '@lib/wrapper/useSession';
+import { withPageAuthForm } from '@lib/wrapper/withPageAuthForm';
 
-  const [errorMsg, setErrorMsg] = useState('')
+const Login = withPageAuthForm(() => {
+  const { setSession } = useSession();
+  const [errorMsg, setErrorMsg] = useState('');
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
 
-    if (errorMsg) setErrorMsg('')
+    if (errorMsg) setErrorMsg('');
 
+    // get email
     const body = {
-      email: e.currentTarget.email.value,
-    }
+      email: e.currentTarget.email.value
+    };
 
-    try {
-      const magic = new Magic(process.env.NEXT_PUBLIC_MAGIC_PUBLISHABLE_KEY)
-      const didToken = await magic.auth.loginWithMagicLink({
-        email: body.email,
+    // login to magic
+    const magic = new Magic(process.env.NEXT_PUBLIC_MAGIC_PUBLISHABLE_KEY);
+    const didToken = await magic.auth.loginWithMagicLink({
+      email: body.email
+    });
+
+    // post form after,
+    fetch('/api/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + didToken
+      },
+      body: JSON.stringify(body)
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        if (data.isLoggedIn) {
+          setSession(data.user);
+          Router.push('/user/dashboard');
+        }
       })
-      const res = await fetch('/api/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: 'Bearer ' + didToken,
-        },
-        body: JSON.stringify(body),
-      })
-      if (res.status === 200) {
-        Router.push('/user/dashboard/welcome')
-      } else {
-        throw new Error(await res.text())
-      }
-    } catch (error) {
-      console.error('An unexpected error happened occurred:', error)
-      setErrorMsg(error.message)
-    }
-  }
+      .catch((e) => {
+        console.error(e);
+        setErrorMsg(e);
+      });
+  };
 
   return (
     <Layout title="User Login | quaker">
@@ -50,9 +57,7 @@ const Login = () => {
 
       <div className="py-24 w-11/12 mx-auto">
         <div className="text-center">
-          <h1 className="text-4xl text-gray-700 font-extrabold">
-            Login with your email address
-          </h1>
+          <h1 className="text-4xl text-gray-700 font-extrabold">Login with your email address</h1>
 
           <div className="mt-8 flex flex-col w-2/5 mx-auto">
             <form className="" onSubmit={handleSubmit}>
@@ -94,7 +99,7 @@ const Login = () => {
         </div>
       </div>
     </Layout>
-  )
-}
+  );
+});
 
-export default Login
+export default Login;

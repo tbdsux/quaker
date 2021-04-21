@@ -1,48 +1,50 @@
-import Router from 'next/router'
-import { FormEvent, useRef } from 'react'
-import Layout from '@components/Layout'
-import { useUser } from '@lib/hooks'
+import Router from 'next/router';
+import { FormEvent, useRef } from 'react';
+import Layout from '@components/Layout';
+// import { useUser } from '@lib/hooks'
+import { useUser } from '@lib/wrapper/useUser';
 
 const UserWelcome = () => {
-  const user = useUser({ redirectTo: '/login' })
+  // const user = useUser({ redirectTo: '/login' })
+  const user = useUser();
 
   // redirect to dashboard if user has name set
-  if (user) {
-    if (user.name) {
-      Router.push('/user/dashboard')
-    }
-  }
+  // if (user) {
+  //   if (user.name) {
+  //     Router.push('/user/dashboard')
+  //   }
+  // }
 
-  const setNameInput = useRef<HTMLInputElement>(null)
+  const setNameInput = useRef<HTMLInputElement>(null);
 
   const handleSetName = async (e: FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
 
     const body = {
       name: setNameInput.current.value,
-      email: user.email,
-    }
+      email: user.email
+    };
 
     try {
       await fetch('/api/user/profile', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json'
         },
-        body: JSON.stringify(body),
+        body: JSON.stringify(body)
       }).then((res) => {
         if (res.status === 200) {
-          Router.push('/user/dashboard')
+          Router.push('/user/dashboard');
         }
-      })
+      });
     } catch (e) {
-      console.error(e)
+      console.error(e);
     }
-  }
+  };
 
   return (
     <Layout title="Welcome to QuaKer">
-      {user && !user.name && (
+      {/* {user && !user.name && (
         <div className="absolute w-full h-screen bg-white flex items-center justify-center">
           <div className="text-center">
             <h1 className="text-6xl font-black text-coolGray-700">
@@ -72,9 +74,9 @@ const UserWelcome = () => {
             </div>
           </div>
         </div>
-      )}
+      )} */}
     </Layout>
-  )
-}
+  );
+};
 
-export default UserWelcome
+export default UserWelcome;
