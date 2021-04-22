@@ -1,15 +1,18 @@
 import { FormEvent, useEffect, useRef, useState } from 'react';
+import useSWR from 'swr';
 import Router, { useRouter } from 'next/router';
 import Error from 'next/error';
-import useSWR from 'swr';
+import { nanoid } from 'nanoid';
+
 import Layout from '@components/Layout';
-import RenderForm from '@components/RenderForm';
-import { answerFormData, formData } from '@utils/form-data';
+import RenderForm from '@components/shared/RenderForm';
+
 import { fetcher } from '@lib/fetcher';
 
-import { nanoid } from 'nanoid';
-import { FieldDataProps } from 'types/forms';
+import { formData } from '@utils/form-data';
 import { AnswerBodyFormProps } from '@utils/types/answers';
+
+import { FieldDataProps } from '~types/forms';
 
 const FormLinkRender = () => {
   const router = useRouter();

@@ -3,7 +3,7 @@ import Router from 'next/router';
 import { Magic } from 'magic-sdk';
 
 import Layout from '@components/Layout';
-import Menu from '@components/Menu';
+import Menu from '@components/shared/Menu';
 
 import { useSession } from '@lib/wrapper/useSession';
 import { withPageAuthForm } from '@lib/wrapper/withPageAuthForm';

@@ -1,9 +1,13 @@
+import { useHasMounted } from '@lib/hooks/useHasMounted';
 import { useUser } from '@lib/wrapper/useUser';
 import Link from 'next/link';
 import React from 'react';
 
-const Menu = React.memo(() => {
+const DashMenu = React.memo(() => {
+  const mounted = useHasMounted();
   const user = useUser();
+
+  if (!mounted) return null;
 
   return (
     <nav className="py-4 w-5/6 mx-auto flex items-center justify-between">
@@ -34,4 +38,4 @@ const Menu = React.memo(() => {
   );
 });
 
-export default Menu;
+export default DashMenu;

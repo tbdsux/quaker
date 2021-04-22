@@ -1,7 +1,7 @@
-import Image from 'next/image'
+import Image from 'next/image';
 
-import Layout from '@components/Layout'
-import Menu from '@components/Menu'
+import Layout from '@components/Layout';
+import Menu from '@components/shared/Menu';
 
 const Home = () => {
   return (
@@ -29,7 +29,7 @@ const Home = () => {
         </div>
       </div>
     </Layout>
-  )
-}
+  );
+};
 
-export default Home
+export default Home;

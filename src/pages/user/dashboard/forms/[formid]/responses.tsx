@@ -4,13 +4,13 @@ import Link from 'next/link';
 import Error from 'next/error';
 import Layout from '@components/Layout';
 import useSWR from 'swr';
-import Menu from '@components/dashboard/Menu';
+import Menu from '@components/dashboard/DashMenu';
 import { useUser } from '@lib/wrapper/useUser';
 import { getForm } from '@utils/form';
 import { fetcher } from '@lib/fetcher';
-import { answerFormData, formData } from '@utils/form-data';
-import Modal from '@components/Modal';
-import RenderForm from '@components/RenderForm';
+import { formData } from '@utils/form-data';
+import Modal from '@components/shared/Modal';
+import RenderForm from '@components/shared/RenderForm';
 import { AnswerDataFormProps } from '@utils/types/answers';
 
 interface formStat {
@@ -69,7 +69,7 @@ const FormReponses = () => {
             setDeleted(false);
             setDelRefID(null);
           } else {
-            // TODO:: 
+            // TODO::
             // item was not deleted
           }
         });

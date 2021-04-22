@@ -1,5 +1,5 @@
-import Layout from './Layout';
-import Menu from './Menu';
+import Layout from '../Layout';
+import Menu from '../shared/Menu';
 
 export const Loading = () => {
   return (

@@ -1,14 +1,13 @@
 import { useEffect, useState } from 'react';
-import Router from 'next/router';
-// import { useUser } from "@lib/hooks";
 import useSWR from 'swr';
+import Link from 'next/link';
 
 import Layout from '@components/Layout';
-import Menu from '@components/dashboard/Menu';
+import Menu from '@components/dashboard/DashMenu';
 import { NewFormModal } from '@components/dashboard/NewFormModal';
-import Link from 'next/link';
+import { UserLoading } from '@components/loading/user';
+
 import { fetcher } from '@lib/fetcher';
-import { Loading } from '@components/Loading';
 import { useUser } from '@lib/wrapper/useUser';
 import { withPageAuthRequired } from '@lib/wrapper/withPageAuthForm';
 
@@ -35,7 +34,7 @@ const UserDashboard = withPageAuthRequired(() => {
 
   // loading info while trying to get all forms
   if (!data && user) {
-    return <Loading />;
+    return <UserLoading />;
   }
 
   return (

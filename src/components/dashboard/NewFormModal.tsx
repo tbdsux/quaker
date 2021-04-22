@@ -1,7 +1,7 @@
 import { Dispatch, FormEvent, SetStateAction, useRef } from 'react';
 import Router from 'next/router';
 
-import Modal from '@components/Modal';
+import Modal from '@components/shared/Modal';
 
 type NewFormModalProps = {
   modal: boolean;

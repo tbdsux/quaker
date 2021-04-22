@@ -4,11 +4,11 @@ import Link from 'next/link';
 import useSWR from 'swr';
 
 import Layout from '@components/Layout';
-import Menu from '@components/dashboard/Menu';
-import Modal from '@components/Modal';
+import Menu from '@components/dashboard/DashMenu';
+import Modal from '@components/shared/Modal';
 import { formData } from '@utils/form-data';
 import { fetcher } from '@lib/fetcher';
-import { Loading } from '@components/Loading';
+import { UserLoading } from '@components/loading/user';
 import { FieldDataProps } from 'types/forms';
 import { useUser } from '@lib/wrapper/useUser';
 
@@ -104,7 +104,7 @@ const ModifyForm = () => {
 
   // show loading if form's data is still not available
   if (!data && user) {
-    return <Loading />;
+    return <UserLoading />;
   }
 
   return (
