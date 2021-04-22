@@ -100,9 +100,14 @@ const FormReponses = () => {
           <Modal open={view} modal={setView} modalClass="w-5/6 mx-auto">
             {view && viewResponse && (
               <div>
-                <div className="flex justify-between m-4">
+                <div className="flex justify-between items-end m-4">
                   <h3 className="text-xl font-bold tracking-wide">View Response</h3>
-                  <p>{viewResponse.data.responseId}</p>
+                  <p className="text-sm">
+                    Date:{' '}
+                    <span className="underline">
+                      {new Date(viewResponse.data.date).toUTCString()}
+                    </span>
+                  </p>
                 </div>
                 <hr />
                 <div className="w-2/3 p-6 my-2 bg-gray-100 mx-auto">

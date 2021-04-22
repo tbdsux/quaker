@@ -26,7 +26,7 @@ const RenderForm = ({ formfields, formresp }: FormRenderProps) => {
           ) : field.type == 'text-input' ? (
             <div>
               <textarea
-                className="py-2 text-lg rounded-md border h-32 w-full"
+                className="py-2 text-lg rounded-md px-4 border h-32 w-full"
                 name={field.question}
                 defaultValue={formresp ? formresp[field.question] : null}
                 readOnly={formresp ? true : false}
