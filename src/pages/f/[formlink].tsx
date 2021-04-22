@@ -17,7 +17,7 @@ import { FieldDataProps } from '~types/forms';
 const FormLinkRender = () => {
   const router = useRouter();
   const { formlink } = router.query;
-  const { data, isValidating } = useSWR(formlink ? `/api/forms/${formlink}` : null, fetcher);
+  const { data } = useSWR(formlink ? `/api/forms/${formlink}` : null, fetcher);
   const submitBtn = useRef<HTMLButtonElement>(null);
   const [form, setForm] = useState<formData>(null);
 
@@ -37,7 +37,7 @@ const FormLinkRender = () => {
 
     // form submit
     const answerData: AnswerBodyFormProps = {
-      formid: data.form.data.ref['@ref'].id,
+      formid: data.form.ref['@ref'].id,
       data: {
         date: new Date(),
         answers: answers,
@@ -74,7 +74,7 @@ const FormLinkRender = () => {
   // finished query but it doesn't exist or the api returned an error
   if (data && data.error) return <Error statusCode={404} />;
 
-  if (isValidating) return <div>Loading...</div>;
+  if (!data) return <>Loading...</>;
 
   return (
     <>
