@@ -45,8 +45,6 @@ const withPageAuthForm: WithPageAuthProps = (PageComponent, options) => {
       Router.push(options?.redirectTo ? options.redirectTo : '/user/dashboard');
     }
 
-    if (isLoading) return <></>;
-
     return <PageComponent {...props} />;
   };
 };
@@ -59,7 +57,6 @@ const withPageAuthRequired: WithPageAuthProps = (PageComponent, options) => {
       Router.push(options?.redirectTo ? options.redirectTo : '/login');
     }
 
-    if (isLoading) return <></>;
     return <PageComponent {...props} />;
   };
 };
