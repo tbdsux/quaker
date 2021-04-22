@@ -12,8 +12,9 @@ import { UserLoading } from '@components/loading/user';
 import { FieldDataProps } from 'types/forms';
 import { useUser } from '@lib/wrapper/useUser';
 import { joinFormUrl, PROJECT_SITE } from '@utils/site';
+import { withPageAuthRequired } from '@lib/wrapper/withPageAuth';
 
-const ModifyForm = () => {
+const ModifyForm = withPageAuthRequired(() => {
   // MAIN STATES
   const { user } = useUser();
   const router = useRouter();
@@ -300,6 +301,6 @@ const ModifyForm = () => {
       )}
     </>
   );
-};
+});
 
 export default ModifyForm;

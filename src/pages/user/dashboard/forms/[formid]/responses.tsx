@@ -12,6 +12,7 @@ import { formData } from '@utils/form-data';
 import Modal from '@components/shared/Modal';
 import RenderForm from '@components/shared/RenderForm';
 import { AnswerDataFormProps } from '@utils/types/answers';
+import { withPageAuthRequired } from '@lib/wrapper/withPageAuth';
 
 interface formStat {
   form: formData;
@@ -22,7 +23,7 @@ interface resp {
   data: AnswerDataFormProps;
 }
 
-const FormReponses = () => {
+const FormReponses = withPageAuthRequired(() => {
   const { user } = useUser();
 
   const [view, setView] = useState<boolean>(false);
@@ -161,6 +162,6 @@ const FormReponses = () => {
       )}
     </>
   );
-};
+});
 
 export default FormReponses;
