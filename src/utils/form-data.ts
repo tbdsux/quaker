@@ -1,7 +1,7 @@
 import { Expr } from 'faunadb';
 
 export interface formData {
-  user: string;
+  user: object;
   name: string;
   fields: object[];
   linkId: string;

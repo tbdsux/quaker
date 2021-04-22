@@ -17,7 +17,7 @@ import { FieldDataProps } from '~types/forms';
 const FormLinkRender = () => {
   const router = useRouter();
   const { formlink } = router.query;
-  const { data, error } = useSWR(formlink ? `/api/forms/${formlink}` : null, fetcher);
+  const { data, isValidating } = useSWR(formlink ? `/api/forms/${formlink}` : null, fetcher);
   const submitBtn = useRef<HTMLButtonElement>(null);
   const [form, setForm] = useState<formData>(null);
 
@@ -37,7 +37,7 @@ const FormLinkRender = () => {
 
     // form submit
     const answerData: AnswerBodyFormProps = {
-      formid: data.ref['@ref'].id,
+      formid: data.form.data.ref['@ref'].id,
       data: {
         date: new Date(),
         answers: answers,
@@ -67,23 +67,14 @@ const FormLinkRender = () => {
   // UTILS
   useEffect(() => {
     if (data) {
-      setForm(data.data);
+      setForm(data.form?.data);
     }
   }, [data]);
 
-  if (error) {
-    return <Error statusCode={404} />;
-  }
+  // finished query but it doesn't exist or the api returned an error
+  if (data && data.error) return <Error statusCode={404} />;
 
-  if (!data) {
-    return <div>Loading...</div>;
-  }
-
-  // RENDER 404 IF NO FIELDS DEFINED IN THE FORM
-  // THIS IS TO PREVENT UNNECESSARY SUBMISSIONS WITH NO FIELDS
-  if (form && form.fields.length < 1) {
-    return <Error statusCode={404} />;
-  }
+  if (isValidating) return <div>Loading...</div>;
 
   return (
     <>
