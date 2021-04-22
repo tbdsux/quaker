@@ -111,11 +111,12 @@ const FormReponses = () => {
               </div>
             )}
           </Modal>
+
           <Menu />
 
           <div className="w-5/6 mx-auto my-8">
             <h3 className="text-2xl">
-              <Link href={`/user/forms/${formid}`}>
+              <Link href={`/user/dashboard/forms/${formid}`}>
                 <a className="font-extrabold text-teal-500 hover:underline">{form.name}</a>
               </Link>{' '}
               | <span className="text-xl">Responses</span>

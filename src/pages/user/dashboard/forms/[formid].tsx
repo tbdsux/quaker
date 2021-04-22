@@ -11,6 +11,7 @@ import { fetcher } from '@lib/fetcher';
 import { UserLoading } from '@components/loading/user';
 import { FieldDataProps } from 'types/forms';
 import { useUser } from '@lib/wrapper/useUser';
+import { joinFormUrl, PROJECT_SITE } from '@utils/site';
 
 const ModifyForm = () => {
   // MAIN STATES
@@ -224,13 +225,22 @@ const ModifyForm = () => {
 
           <div className="w-4/5 mx-auto py-12">
             <div className="flex items-center justify-between">
-              <h3 className="font-extrabold text-2xl tracking-wide underline text-teal-500">
-                {form.name}
-              </h3>
-              <div>
+              <div className="inline-flex items-end">
+                <h3 className="font-extrabold text-2xl tracking-wide underline text-teal-500">
+                  {form.name}
+                </h3>
+                <a
+                  target="_blank"
+                  href={joinFormUrl(form.linkId)}
+                  className="ml-2 text-coolGray-500 hover:underline"
+                >
+                  ({form.linkId})
+                </a>
+              </div>
+              <div className="inline-flex items-center">
                 <button
                   onClick={() => setFieldModal(true)}
-                  className="bg-coolGray-500 hover:bg-coolGray-600 text-white py-2 px-8 tracking-wide"
+                  className="bg-coolGray-500 hover:bg-coolGray-600 text-white py-2 px-8 tracking-wide border-coolGray-500"
                 >
                   Add Field
                 </button>
