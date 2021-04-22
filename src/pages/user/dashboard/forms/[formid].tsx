@@ -14,7 +14,7 @@ import { useUser } from '@lib/wrapper/useUser';
 
 const ModifyForm = () => {
   // MAIN STATES
-  const user = useUser();
+  const { user } = useUser();
   const router = useRouter();
   const { formid } = router.query;
   const [form, setForm] = useState<formData>();

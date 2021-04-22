@@ -9,10 +9,10 @@ import { UserLoading } from '@components/loading/user';
 
 import { fetcher } from '@lib/fetcher';
 import { useUser } from '@lib/wrapper/useUser';
-import { withPageAuthRequired } from '@lib/wrapper/withPageAuthForm';
+import { withPageAuthRequired } from '@lib/wrapper/withPageAuth';
 
 const UserDashboard = withPageAuthRequired(() => {
-  const user = useUser();
+  const { user } = useUser();
 
   // const user = useUser({ redirectTo: "/login" });
   const { data } = useSWR('/api/user/forms', fetcher);

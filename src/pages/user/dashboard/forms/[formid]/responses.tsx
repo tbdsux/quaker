@@ -23,7 +23,7 @@ interface resp {
 }
 
 const FormReponses = () => {
-  const user = useUser();
+  const { user } = useUser();
 
   const [view, setView] = useState<boolean>(false);
   const [viewResponse, setViewResponse] = useState<AnswerDataFormProps>(null);

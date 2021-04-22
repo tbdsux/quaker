@@ -38,32 +38,28 @@ type WithPageAuthProps = <P extends object>(
 ) => React.FC<P>;
 
 const withPageAuthForm: WithPageAuthProps = (PageComponent, options) => {
-  return function withPageAuthFormprops(props): JSX.Element {
-    const mounted = useHasMounted();
-    const user = useUser();
+  return function withPageAuth(props): JSX.Element {
+    const { isLoading, user } = useUser();
 
-    useEffect(() => {
-      if (user) {
-        Router.push(options?.redirectTo ? options.redirectTo : '/user/dashboard');
-      }
-    }, [user]);
+    if (user && !isLoading) {
+      Router.push(options?.redirectTo ? options.redirectTo : '/user/dashboard');
+    }
 
-    if (!mounted) return null;
+    if (isLoading) return <></>;
 
     return <PageComponent {...props} />;
   };
 };
 
 const withPageAuthRequired: WithPageAuthProps = (PageComponent, options) => {
-  return function withPageAuthFormprops(props): JSX.Element {
-    const user = useUser();
+  return function withPageAuth(props): JSX.Element {
+    const { isLoading, user } = useUser();
 
-    useEffect(() => {
-      if (!user) {
-        Router.push(options?.redirectTo ? options.redirectTo : '/login');
-      }
-    }, [user]);
+    if (!user && !isLoading) {
+      Router.push(options?.redirectTo ? options.redirectTo : '/login');
+    }
 
+    if (isLoading) return <></>;
     return <PageComponent {...props} />;
   };
 };

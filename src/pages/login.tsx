@@ -6,7 +6,7 @@ import Layout from '@components/Layout';
 import Menu from '@components/shared/Menu';
 
 import { useSession } from '@lib/wrapper/useSession';
-import { withPageAuthForm } from '@lib/wrapper/withPageAuthForm';
+import { withPageAuthForm } from '@lib/wrapper/withPageAuth';
 
 const Login = withPageAuthForm(() => {
   const { setSession } = useSession();

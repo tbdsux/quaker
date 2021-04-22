@@ -4,10 +4,9 @@ import Link from 'next/link';
 import React from 'react';
 
 const DashMenu = React.memo(() => {
-  const mounted = useHasMounted();
-  const user = useUser();
+  const { user, isLoading } = useUser();
 
-  if (!mounted) return null;
+  if (isLoading) return null;
 
   return (
     <nav className="py-4 w-5/6 mx-auto flex items-center justify-between">

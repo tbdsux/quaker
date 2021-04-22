@@ -1,11 +1,25 @@
-import { useSession } from "./useSession";
+import { UserContextProps } from './provider';
+import { useSession } from './useSession';
 
-const useUser = () => {
-	const { session } = useSession();
+type UseUserProps = {
+  isLoading: boolean;
+  user: UserContextProps | null;
+};
 
-	if (session) {
-		return session;
-	}
+const useUser = (): UseUserProps => {
+  const { session } = useSession();
+
+  if (session) {
+    return {
+      isLoading: false,
+      user: session
+    };
+  }
+
+  return {
+    isLoading: true,
+    user: null
+  };
 };
 
 export { useUser };
