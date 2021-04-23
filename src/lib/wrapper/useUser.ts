@@ -1,3 +1,4 @@
+import { useHasMounted } from '@lib/hooks/useHasMounted';
 import { UserContextProps } from './provider';
 import { useSession } from './useSession';
 
@@ -6,7 +7,9 @@ type UseUserProps = {
   user: UserContextProps | null;
 };
 
+// PS: I don't know if this is the best solution.
 const useUser = (): UseUserProps => {
+  const mounted = useHasMounted();
   const { session } = useSession();
 
   if (session) {
@@ -16,8 +19,14 @@ const useUser = (): UseUserProps => {
     };
   }
 
+  if (!mounted)
+    return {
+      isLoading: true,
+      user: null
+    };
+
   return {
-    isLoading: true,
+    isLoading: false,
     user: null
   };
 };

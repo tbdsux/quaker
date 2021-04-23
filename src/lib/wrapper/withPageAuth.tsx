@@ -1,8 +1,6 @@
 import { useUser } from '@lib/wrapper/useUser';
-import { useHasMounted } from '@lib/hooks/useHasMounted';
 import Router from 'next/router';
-import { ComponentType, useEffect } from 'react';
-import { useSession } from './useSession';
+import { ComponentType } from 'react';
 
 // type UsePageAuthProps = {
 //   redirectTo?: string;
@@ -41,9 +39,11 @@ const withPageAuthForm: WithPageAuthProps = (PageComponent, options) => {
   return function withPageAuth(props): JSX.Element {
     const { isLoading, user } = useUser();
 
-    if (user && !isLoading) {
+    if (user) {
       Router.push(options?.redirectTo ? options.redirectTo : '/user/dashboard');
     }
+
+    if (isLoading) return null;
 
     return <PageComponent {...props} />;
   };
