@@ -66,14 +66,17 @@ export class FormsModel {
   }
 
   // updateFormFieldsByID updates the form's fields
-  async updateFormFieldsByID(id: string, fields: object[]) {
+  async updateFormFieldsByRef(ref: Expr, fields: object[]) {
     return this._client
       .query(
-        q.Update(q.Ref(q.Collection('forms'), id), {
+        q.Update(ref, {
           data: { fields: fields }
         })
       )
-      .catch(() => undefined);
+      .catch((e) => {
+        console.error(e);
+        return undefined;
+      });
   }
 
   // getFormByLinkId gets the form by its linkid

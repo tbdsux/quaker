@@ -16,9 +16,11 @@ import { withPageAuthRequired } from '@lib/wrapper/withPageAuth';
 
 const ModifyForm = withPageAuthRequired(() => {
   // MAIN STATES
-  const { user } = useUser();
   const router = useRouter();
   const { formid } = router.query;
+
+  const { user } = useUser();
+
   const [form, setForm] = useState<formData>();
   const [formFields, setFormFields] = useState([]);
 
@@ -87,15 +89,19 @@ const ModifyForm = withPageAuthRequired(() => {
           formid: formid,
           fields: formFields
         })
-      }).then(() => {
-        setUpdated(false);
-      });
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.updated) {
+            setUpdated(false);
+          }
+        });
     }
   }, [updated, formFields, formid]);
   // ====> END MAIN FUNCTIONS
 
   // UTIL FUNCTIONS, .THIS ONLY WORKS IF IT IS AT THE END
-  const { data } = useSWR(`/api/user/forms/get/${formid}`, fetcher);
+  const { data } = useSWR(formid ? `/api/user/forms/get/${formid}` : null, fetcher);
 
   useEffect(() => {
     if (data) {
