@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import Router from 'next/router';
 import { Magic } from 'magic-sdk';
 
@@ -11,11 +11,16 @@ import { withPageAuthForm } from '@lib/wrapper/withPageAuth';
 const Login = withPageAuthForm(() => {
   const { setSession } = useSession();
   const [errorMsg, setErrorMsg] = useState('');
+  const btnAuthRef = useRef<HTMLButtonElement>();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (errorMsg) setErrorMsg('');
+
+    // btn authref
+    btnAuthRef.current.innerHTML = 'Authenticating...';
+    btnAuthRef.current.disabled = true;
 
     // get email
     const body = {
@@ -73,8 +78,9 @@ const Login = withPageAuthForm(() => {
                 />
               </div>
               <button
+                ref={btnAuthRef}
                 type="submit"
-                className="mt-4 py-3 px-6 bg-teal-500 hover:bg-teal-600 text-white rounded-full text-lg font-semibold tracking-wide"
+                className="disabled:opacity-70 mt-4 py-3 px-6 bg-teal-500 hover:bg-teal-600 text-white rounded-full text-lg font-semibold tracking-wide"
               >
                 Sign Up / Log In
               </button>
