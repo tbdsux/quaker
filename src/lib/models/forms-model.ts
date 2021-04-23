@@ -2,6 +2,7 @@ import { answerFormData } from '@utils/form-data';
 import { AnswerDataFormProps } from '@utils/types/answers';
 import { Client, Expr } from 'faunadb';
 import { nanoid } from 'nanoid';
+import { FormDataProps, FormDataRef } from '~types/forms';
 import { q, getClient } from '../faunadb';
 
 export class FormsModel {
@@ -61,8 +62,15 @@ export class FormsModel {
     return this._client.query(q.Get(q.Ref(q.Collection('forms'), formId))).catch(() => undefined);
   }
 
-  async getFormByRef(ref: Expr) {
-    return this._client.query(q.Get(ref));
+  async getFormByRef(ref: Expr): Promise<FormDataProps> {
+    return this._client
+      .query(q.Get(ref))
+      .then((r: FormDataRef) => r.data)
+      .catch(() => undefined);
+  }
+
+  async getFormNameFromRef(ref: Expr) {
+    return this._client.query(q.Select(['data', 'name'], q.Get(ref))).catch(() => undefined);
   }
 
   // updateFormFieldsByID updates the form's fields

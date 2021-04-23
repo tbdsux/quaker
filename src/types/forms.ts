@@ -1,12 +1,20 @@
-import { UserProps } from "./user";
+import { UserProps } from './user';
 
-export interface FieldDataProps {
-	question: string;
-	type: string;
+interface FieldDataProps {
+  question: string;
+  type: string;
 }
 
-export interface FormDataProps {
-	user: string;
-	name: string;
-	fields: FieldDataProps;
+interface FormDataProps {
+  owner: object;
+  name: string;
+  fields: FieldDataProps[];
 }
+
+interface FormDataRef {
+  ref: object;
+  ts: number;
+  data: FormDataProps;
+}
+
+export type { FieldDataProps, FormDataProps, FormDataRef };

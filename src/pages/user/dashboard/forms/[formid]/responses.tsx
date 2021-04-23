@@ -6,18 +6,12 @@ import Layout from '@components/Layout';
 import useSWR from 'swr';
 import Menu from '@components/dashboard/DashMenu';
 import { useUser } from '@lib/wrapper/useUser';
-import { getForm } from '@utils/form';
 import { fetcher } from '@lib/fetcher';
-import { formData } from '@utils/form-data';
-import Modal from '@components/shared/Modal';
-import RenderForm from '@components/shared/RenderForm';
 import { AnswerDataFormProps } from '@utils/types/answers';
 import { withPageAuthRequired } from '@lib/wrapper/withPageAuth';
+import { FormDataProps } from '~types/forms';
+import { ViewResponseModal } from '@components/modals/view-response';
 
-interface formStat {
-  form: formData;
-  formOk: boolean;
-}
 interface resp {
   ref: object;
   data: AnswerDataFormProps;
@@ -36,6 +30,7 @@ const FormReponses = withPageAuthRequired(() => {
   const router = useRouter();
   const { formid } = router.query;
   const [responses, setResponses] = useState<object[]>(null);
+  const [form, setForm] = useState<FormDataProps>();
 
   // main functions
   const handleViewResponse = (resp: AnswerDataFormProps) => {
@@ -77,46 +72,34 @@ const FormReponses = withPageAuthRequired(() => {
     }
   }, [deleted, delRefID, formid]);
 
-  // get form info
-  const { form, formOk }: formStat = getForm(Array.isArray(formid) ? formid.join() : formid);
-
   // get form responses
   const { data } = useSWR(formid ? `/api/user/forms/get/responses/${formid}` : null, fetcher);
 
   useEffect(() => {
     if (data) {
-      setResponses(data.form_responses?.data);
+      if (!data.error && data.formExists) {
+        setResponses(data.responses.data);
+        setForm(data.form);
+      }
     }
   }, [data]);
 
-  // formid is not valid
-  if (!formOk && form) {
-    return <>{formid ? <Error statusCode={404} /> : null}</>;
+  if (data) {
+    if (!data.formExists) {
+      return <Error statusCode={404} />;
+    }
   }
 
   return (
     <>
       {user && form && (
         <Layout title="Form Responses">
-          <Modal open={view} modal={setView} modalClass="w-5/6 mx-auto">
-            {view && viewResponse && (
-              <div>
-                <div className="flex justify-between items-end m-4">
-                  <h3 className="text-xl font-bold tracking-wide">View Response</h3>
-                  <p className="text-sm">
-                    Date:{' '}
-                    <span className="underline">
-                      {new Date(viewResponse.data.date).toUTCString()}
-                    </span>
-                  </p>
-                </div>
-                <hr />
-                <div className="w-2/3 p-6 my-2 bg-gray-100 mx-auto">
-                  <RenderForm formfields={form.fields} formresp={viewResponse.data.answers} />
-                </div>
-              </div>
-            )}
-          </Modal>
+          <ViewResponseModal
+            open={view}
+            setOpen={setView}
+            response={viewResponse}
+            formFields={form.fields}
+          />
 
           <Menu />
 
