@@ -4,7 +4,7 @@ import Link from 'next/link';
 
 import Layout from '@components/Layout';
 import Menu from '@components/dashboard/DashMenu';
-import { NewFormModal } from '@components/dashboard/NewFormModal';
+import { NewFormModal } from '@components/modals/new-form';
 import { UserLoading } from '@components/loading/user';
 
 import { fetcher } from '@lib/fetcher';

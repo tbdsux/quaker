@@ -5,7 +5,6 @@ import useSWR from 'swr';
 
 import Layout from '@components/Layout';
 import Menu from '@components/dashboard/DashMenu';
-import Modal from '@components/shared/Modal';
 import { formData } from '@utils/form-data';
 import { fetcher } from '@lib/fetcher';
 import { UserLoading } from '@components/loading/user';
@@ -13,6 +12,7 @@ import { FieldDataProps } from 'types/forms';
 import { useUser } from '@lib/wrapper/useUser';
 import { joinFormUrl, PROJECT_SITE } from '@utils/site';
 import { withPageAuthRequired } from '@lib/wrapper/withPageAuth';
+import { FieldsModal } from '@components/modals/fields';
 
 const ModifyForm = withPageAuthRequired(() => {
   // MAIN STATES
@@ -48,11 +48,6 @@ const ModifyForm = withPageAuthRequired(() => {
     setUpdated(true);
   };
 
-  const handleCloseModalForm = () => {
-    setModifyMode(false);
-    setFieldType('field-type');
-  };
-
   const handleRemoveFormField = (fd: FieldDataProps) => {
     var tf = formFields;
     tf.splice(tf.indexOf(fd), 1);
@@ -61,16 +56,12 @@ const ModifyForm = withPageAuthRequired(() => {
     setUpdated(true);
   };
 
-  const handleModifyFormField = (fd: FieldDataProps) => {
-    const fieldData: FieldDataProps = {
-      question: fieldQuestion.current.value,
-      type: fieldType
-    };
-    const index = formFields.indexOf(fd);
+  const handleModifyFormField = (old: FieldDataProps, fd: FieldDataProps) => {
+    const index = formFields.indexOf(old);
     const f = formFields;
 
     f.splice(index, 1);
-    f.splice(index, 0, fieldData);
+    f.splice(index, 0, fd);
 
     setFieldModal(false);
     setFormFields(f);
@@ -119,114 +110,14 @@ const ModifyForm = withPageAuthRequired(() => {
     <>
       {user && form && (
         <Layout title={`${form.name} | Modify Form - Quaker`}>
-          <Modal
+          <FieldsModal
             open={fieldModal}
-            modal={setFieldModal}
-            onModalClose={() => handleCloseModalForm()}
-            modalClass="w-1/2 mx-auto rounded-md"
-          >
-            <div>
-              <h3 className="text-3xl font-extrabold tracking-wide text-coolGray-700 underline">
-                {modifyMode ? 'Edit field' : 'Add a field'}
-              </h3>
-              <div className="mt-8">
-                <div className="flex items-center text-lg">
-                  <label htmlFor="field-type" className="mr-3">
-                    Field Type :
-                  </label>
-                  <select
-                    name="field-type"
-                    id=""
-                    className="py-2 px-4 rounded-md bg-gray-100"
-                    onChange={(e: ChangeEvent<HTMLSelectElement>) => {
-                      setFieldType(e.target.value);
-                    }}
-                    defaultValue={fieldType}
-                  >
-                    <option value="field-type" disabled>
-                      Choose a field type...
-                    </option>
-                    <option value="user-input">User Input</option>
-                    <option value="text-input">Text Input</option>
-                    <option value="multiple-choice">Multiple Choice</option>
-                  </select>
-                </div>
-                <hr className="my-2" />
-
-                <div>
-                  {fieldType == 'user-input' ? (
-                    <div>
-                      <h2 className="text-lg my-3 font-bold tracking-wide uppercase text-teal-800">
-                        User Input
-                      </h2>
-                      <div className="flex flex-col w-5/6 mx-auto">
-                        <label htmlFor="field-question">Please enter the question to ask...</label>
-                        <input
-                          ref={fieldQuestion}
-                          name="field-question"
-                          type="text"
-                          placeholder="Your question..."
-                          className="py-2 border px-4 rounded-md"
-                          defaultValue={modifyMode ? modifyField.question : ''}
-                        />
-                      </div>
-                    </div>
-                  ) : fieldType == 'text-input' ? (
-                    <div>
-                      <h2 className="text-lg my-3 font-bold tracking-wide uppercase text-teal-800">
-                        Text Input
-                      </h2>
-                      <div className="flex flex-col w-5/6 mx-auto">
-                        <label htmlFor="field-question">Please enter the question to ask...</label>
-                        <input
-                          ref={fieldQuestion}
-                          name="field-question"
-                          type="text"
-                          placeholder="Your question..."
-                          className="py-2 border px-4 rounded-md"
-                          defaultValue={modifyMode ? modifyField.question : ''}
-                        />
-                      </div>
-                    </div>
-                  ) : fieldType == 'multiple-choice' ? (
-                    <div>
-                      <h2 className="text-lg my-3 font-bold tracking-wide uppercase text-teal-800">
-                        Multiple Choice
-                      </h2>
-                      <div>Currently in the works...</div>
-                    </div>
-                  ) : null}
-                </div>
-
-                <div className="flex items-center justify-end mt-4">
-                  {modifyMode ? (
-                    <button
-                      onClick={() => handleModifyFormField(modifyField)}
-                      className="py-2 px-6 mx-1 rounded-md bg-teal-500 hover:bg-teal-600 text-white"
-                    >
-                      Modify
-                    </button>
-                  ) : (
-                    <button
-                      onClick={handleAddFormField}
-                      className="py-2 px-6 mx-1 rounded-md bg-teal-500 hover:bg-teal-600 text-white"
-                    >
-                      Add
-                    </button>
-                  )}
-                  <button
-                    onClick={() => {
-                      setFieldModal(false);
-                      handleCloseModalForm();
-                    }}
-                    className="py-2 px-6 mx-1 rounded-md bg-gray-500 hover:bg-gray-600 text-white"
-                  >
-                    Cancel
-                  </button>
-                </div>
-              </div>
-            </div>
-          </Modal>
+            setOpen={setFieldModal}
+            modify={modifyMode}
+            modifyFieldData={modifyField}
+            handleAddFormField={handleAddFormField}
+            handleModifyFormField={handleModifyFormField}
+          />
 
           <Menu />
 
@@ -246,7 +137,10 @@ const ModifyForm = withPageAuthRequired(() => {
               </div>
               <div className="inline-flex items-center">
                 <button
-                  onClick={() => setFieldModal(true)}
+                  onClick={() => {
+                    setModifyMode(false);
+                    setFieldModal(true);
+                  }}
                   className="bg-coolGray-500 hover:bg-coolGray-600 text-white py-2 px-8 tracking-wide border-coolGray-500"
                 >
                   Add Field
@@ -265,8 +159,8 @@ const ModifyForm = withPageAuthRequired(() => {
             <div className="bg-gray-50 p-8">
               <h4 className="mb-4 ml-4">Preview: </h4>
               <div className="w-2/3 mx-auto">
-                {formFields.map((field) => (
-                  <div key={formFields.indexOf(field)} className="flex flex-col my-3 p-2">
+                {formFields.map((field, index) => (
+                  <div key={index} className="flex flex-col my-3 p-2">
                     <div className="flex items-center justify-between">
                       <p className="text-lg tracking-wide mb-1">{field.question}</p>
                       <div>
@@ -275,7 +169,6 @@ const ModifyForm = withPageAuthRequired(() => {
                             setFieldModal(true);
                             setModifyMode(true);
                             setModifyField(field);
-                            setFieldType(field.type);
                           }}
                           className="mx-1 text-sm underline tracking-wide"
                         >
