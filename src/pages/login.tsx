@@ -46,7 +46,10 @@ const Login = withPageAuthForm(() => {
       .then((data) => {
         console.log(data);
         if (data.isLoggedIn) {
-          setSession(data.user);
+          setSession({
+            user: data.user,
+            isLoggedIn: !!data.user
+          });
           Router.push('/user/dashboard');
         }
       })

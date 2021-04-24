@@ -1,11 +1,13 @@
+import { useHasMounted } from '@lib/hooks/useHasMounted';
 import { useUser } from '@lib/wrapper/useUser';
 import Link from 'next/link';
 import React from 'react';
 
 const DashMenu = React.memo(() => {
-  const { user, isLoading } = useUser();
+  const mounted = useHasMounted;
+  const { user } = useUser();
 
-  if (isLoading) return null;
+  if (!mounted) return null;
 
   return (
     <>

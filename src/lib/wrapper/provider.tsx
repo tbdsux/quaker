@@ -1,50 +1,65 @@
 import {
-	createContext,
-	Dispatch,
-	ReactNode,
-	SetStateAction,
-	useEffect,
-	useMemo,
-	useState,
-} from "react";
-import useSWR from "swr";
+  createContext,
+  Dispatch,
+  ReactNode,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState
+} from 'react';
+import useSWR from 'swr';
 
 type UserContextProps = {
-	token: string;
-	email: string;
-	issuer: string;
-	createdAt: number;
-	maxAge: number;
+  token: string;
+  email: string;
+  issuer: string;
+  createdAt: number;
+  maxAge: number;
+};
+
+type SessionUserProps = {
+  user: UserContextProps | null;
+  isLoggedIn: boolean;
 };
 type MagicUserContextProviderProps = {
-	session: UserContextProps;
-	setSession: Dispatch<SetStateAction<UserContextProps>>;
+  session: SessionUserProps;
+  setSession: Dispatch<SetStateAction<SessionUserProps>>;
 };
 type QuakerMagicUserProviderProps = {
-	children: ReactNode;
+  children: ReactNode;
 };
 
 const MagicUserContext = createContext<MagicUserContextProviderProps>(null);
 
-const QuakerMagicUserProvider = ({
-	children,
-}: QuakerMagicUserProviderProps) => {
-	const [session, setSession] = useState<UserContextProps>();
+const QuakerMagicUserProvider = ({ children }: QuakerMagicUserProviderProps) => {
+  const [session, setSession] = useState<SessionUserProps>({
+    user: null,
+    isLoggedIn: false
+  });
 
-	const { data, error } = useSWR("/api/user");
-	const value = useMemo(() => ({ session, setSession }), [session]);
+  const fetchUser = useCallback(() => {
+    fetch('/api/user', {
+      method: 'GET'
+    })
+      .then((r) => r.json())
+      .then((data) => {
+        setSession({
+          user: data.user,
+          isLoggedIn: !!data.user
+        });
+      });
+  }, []);
 
-	useEffect(() => {
-		if (data) {
-			setSession(data.user);
-		}
-	}, [data]);
+  useEffect(() => {
+    fetchUser();
+  }, []);
 
-	return (
-		<MagicUserContext.Provider value={value}>
-			{children}
-		</MagicUserContext.Provider>
-	);
+  return (
+    <MagicUserContext.Provider value={{ session, setSession }}>
+      {children}
+    </MagicUserContext.Provider>
+  );
 };
 
 export default QuakerMagicUserProvider;

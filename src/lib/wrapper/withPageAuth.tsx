@@ -1,6 +1,7 @@
+import { useHasMounted } from '@lib/hooks/useHasMounted';
 import { useUser } from '@lib/wrapper/useUser';
 import Router from 'next/router';
-import { ComponentType } from 'react';
+import { ComponentType, useEffect } from 'react';
 
 // type UsePageAuthProps = {
 //   redirectTo?: string;
@@ -37,27 +38,33 @@ type WithPageAuthProps = <P extends object>(
 
 const withPageAuthForm: WithPageAuthProps = (PageComponent, options) => {
   return function withPageAuth(props): JSX.Element {
-    const { isLoading, user } = useUser();
+    const mounted = useHasMounted();
+    const { isLoggedIn } = useUser();
 
-    if (user) {
+    if (mounted && isLoggedIn) {
       Router.push(options?.redirectTo ? options.redirectTo : '/user/dashboard');
     }
 
-    if (isLoading) return null;
+    if (!isLoggedIn) return <PageComponent {...props} />;
 
-    return <PageComponent {...props} />;
+    return <></>;
   };
 };
 
 const withPageAuthRequired: WithPageAuthProps = (PageComponent, options) => {
   return function withPageAuth(props): JSX.Element {
-    const { isLoading, user } = useUser();
+    const mounted = useHasMounted();
+    const { isLoggedIn, user } = useUser();
 
-    if (!user && !isLoading) {
-      Router.push(options?.redirectTo ? options.redirectTo : '/login');
-    }
+    useEffect(() => {
+      if (mounted && !isLoggedIn && !user) {
+        Router.push(options?.redirectTo ? options.redirectTo : '/login');
+      }
+    }, [mounted, isLoggedIn]);
 
-    return <PageComponent {...props} />;
+    if (isLoggedIn) return <PageComponent {...props} />;
+
+    return <></>;
   };
 };
 
