@@ -36,22 +36,23 @@ const MagicUserContext = createContext<MagicUserContextProviderProps>(null);
 const QuakerMagicUserProvider = ({ children }: QuakerMagicUserProviderProps) => {
   const [session, setSession] = useState<SessionUserProps>(null);
 
-  const fetchUser = useCallback(() => {
-    fetch('/api/user', {
+  const fetchUser = useCallback(async (): Promise<void> => {
+    const r = await fetch('/api/user', {
       method: 'GET'
-    })
-      .then((r) => r.json())
-      .then((data) => {
-        setSession({
-          user: data.user,
-          isLoggedIn: !!data.user
-        });
-      });
+    });
+    const data = await r.json();
+    setSession({
+      user: data.user,
+      isLoggedIn: !!data.user
+    });
   }, []);
 
   useEffect(() => {
-    fetchUser();
-  }, []);
+    if (session?.user) return;
+    (async () => {
+      await fetchUser();
+    })();
+  }, [session?.user]);
 
   return (
     <MagicUserContext.Provider value={{ session, setSession, isSessionLoading: !session }}>
