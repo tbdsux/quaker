@@ -24,6 +24,7 @@ type SessionUserProps = {
 };
 type MagicUserContextProviderProps = {
   session: SessionUserProps;
+  isSessionLoading: boolean;
   setSession: Dispatch<SetStateAction<SessionUserProps>>;
 };
 type QuakerMagicUserProviderProps = {
@@ -33,10 +34,7 @@ type QuakerMagicUserProviderProps = {
 const MagicUserContext = createContext<MagicUserContextProviderProps>(null);
 
 const QuakerMagicUserProvider = ({ children }: QuakerMagicUserProviderProps) => {
-  const [session, setSession] = useState<SessionUserProps>({
-    user: null,
-    isLoggedIn: false
-  });
+  const [session, setSession] = useState<SessionUserProps>(null);
 
   const fetchUser = useCallback(() => {
     fetch('/api/user', {
@@ -56,7 +54,7 @@ const QuakerMagicUserProvider = ({ children }: QuakerMagicUserProviderProps) => 
   }, []);
 
   return (
-    <MagicUserContext.Provider value={{ session, setSession }}>
+    <MagicUserContext.Provider value={{ session, setSession, isSessionLoading: !session }}>
       {children}
     </MagicUserContext.Provider>
   );

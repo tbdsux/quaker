@@ -1,12 +1,17 @@
-import { useHasMounted } from '@lib/hooks/useHasMounted';
 import { UserContextProps } from './provider';
 import { useSession } from './useSession';
 
-// PS: I don't know if this is the best solution.
-const useUser = () => {
-  const { session } = useSession();
+type UseUserProps = {
+  isLoading: boolean;
+  isLoggedIn: boolean;
+  user: UserContextProps;
+};
 
-  return session;
+// PS: I don't know if this is the best solution.
+const useUser = (): UseUserProps => {
+  const { session, isSessionLoading } = useSession();
+
+  return { isLoading: isSessionLoading, ...session };
 };
 
 export { useUser };

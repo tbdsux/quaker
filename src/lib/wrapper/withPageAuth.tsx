@@ -53,14 +53,13 @@ const withPageAuthForm: WithPageAuthProps = (PageComponent, options) => {
 
 const withPageAuthRequired: WithPageAuthProps = (PageComponent, options) => {
   return function withPageAuth(props): JSX.Element {
-    const mounted = useHasMounted();
-    const { isLoggedIn, user } = useUser();
+    const { isLoggedIn, user, isLoading } = useUser();
 
     useEffect(() => {
-      if (mounted && !isLoggedIn && !user) {
+      if (!isLoggedIn && !user && !isLoading) {
         Router.push(options?.redirectTo ? options.redirectTo : '/login');
       }
-    }, [mounted, isLoggedIn]);
+    }, [isLoggedIn, user]);
 
     if (isLoggedIn) return <PageComponent {...props} />;
 
