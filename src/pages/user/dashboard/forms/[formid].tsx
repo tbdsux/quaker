@@ -37,14 +37,9 @@ const ModifyForm = withPageAuthRequired(() => {
   // END FORM FIELD STATES
 
   // ====> MAIN FUNCTIONS
-  const handleAddFormField = () => {
-    const fieldData: FieldDataProps = {
-      question: fieldQuestion.current.value,
-      type: fieldType
-    };
-
+  const handleAddFormField = (fd: FieldDataProps) => {
     setFieldModal(false);
-    setFormFields([...formFields, fieldData]);
+    setFormFields([...formFields, fd]);
     setUpdated(true);
   };
 

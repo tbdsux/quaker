@@ -10,7 +10,7 @@ import { ModalProps } from '~types/modals';
 interface ModifyFormFieldsProps extends ModalProps {
   modify: boolean;
   modifyFieldData?: FieldDataProps;
-  handleAddFormField: () => void;
+  handleAddFormField: (fd: FieldDataProps) => void;
   handleModifyFormField: (old: FieldDataProps, fd: FieldDataProps) => void;
 }
 
@@ -32,16 +32,25 @@ const FieldsModal = ({
     }
   }, [modify, modifyFieldData]);
 
-  const handleModifyWrapper = () => {
-    const n: FieldDataProps = {
+  // create new field and return
+  const newField = (): FieldDataProps => {
+    return {
       question: fieldQuestion.current.value,
       type: type
     };
+  };
+
+  const handleModifyWrapper = () => {
+    const n = newField();
 
     // only modify if different set of values
     if (n != modifyFieldData) {
       handleModifyFormField(modifyFieldData, n);
     }
+  };
+
+  const handleAddWrapper = () => {
+    handleAddFormField(newField());
   };
 
   return (
@@ -122,7 +131,7 @@ const FieldsModal = ({
                   </button>
                 ) : (
                   <button
-                    onClick={handleAddFormField}
+                    onClick={() => handleAddWrapper()}
                     className="py-2 px-6 mx-1 rounded-md bg-teal-500 hover:bg-teal-600 text-white"
                   >
                     Add
