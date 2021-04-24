@@ -2,7 +2,7 @@ import { answerFormData } from '@utils/form-data';
 import { AnswerDataFormProps } from '@utils/types/answers';
 import { Client, Expr } from 'faunadb';
 import { nanoid } from 'nanoid';
-import { FormDataProps, FormDataRef } from '~types/forms';
+import { FormDataProps, FormDataRef, FormsPaginate } from '~types/forms';
 import { q, getClient } from '../faunadb';
 
 export class FormsModel {
@@ -48,13 +48,15 @@ export class FormsModel {
       .catch(() => undefined);
   }
 
-  async queryUserForms() {
-    return this._client.query(
-      q.Map(
-        q.Paginate(q.Match(q.Index('forms_by_userRef'), q.CurrentIdentity())),
-        q.Lambda((x) => q.Get(x))
+  async queryUserForms(): Promise<FormsPaginate> {
+    return this._client
+      .query(
+        q.Map(
+          q.Paginate(q.Match(q.Index('forms_by_userRef'), q.CurrentIdentity())),
+          q.Lambda((x) => q.Get(x))
+        )
       )
-    );
+      .catch(() => undefined);
   }
 
   // getFormById gets the form by it's 'ref-id' [this is more efficient]

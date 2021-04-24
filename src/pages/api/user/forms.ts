@@ -3,9 +3,16 @@ import { getLoginSession } from '@lib/auth';
 import { FormsModel } from '@lib/models/forms-model';
 import methodHandler from '@utils/middleware/method-handler';
 import sessionHandler from '@utils/middleware/session-handler';
+import { BaseApiQueryResponse } from '~types/query';
+import { FormDataRef, FormsPaginate } from '~types/forms';
+import { getTokenFromSession } from '@lib/hooks/getToken';
 
-async function query_forms(req: NextApiRequest, res: NextApiResponse) {
-  const { token } = await getLoginSession(req);
+interface QueryFormsReponse extends BaseApiQueryResponse {
+  forms?: FormsPaginate;
+}
+
+async function query_forms(req: NextApiRequest, res: NextApiResponse<QueryFormsReponse>) {
+  const token = await getTokenFromSession(req);
 
   // query db info
   const formsModel = new FormsModel(token);
@@ -13,10 +20,18 @@ async function query_forms(req: NextApiRequest, res: NextApiResponse) {
 
   // query result is undefined
   if (!forms) {
-    return res.status(500).end();
+    return res.status(500).json({
+      error: true,
+      message: 'There was a problem while trying to query user forms.'
+    });
   }
 
-  return res.status(200).json({ forms: forms || null });
+  return res.status(200).json({
+    error: false,
+    message: 'Success!',
+    forms: forms
+  });
 }
 
 export default methodHandler(sessionHandler(query_forms), ['GET']);
+export type { QueryFormsReponse };

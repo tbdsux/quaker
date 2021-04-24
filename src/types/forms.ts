@@ -9,6 +9,8 @@ interface FormDataProps {
   owner: object;
   name: string;
   fields: FieldDataProps[];
+  linkId: string;
+  createdDate: string;
 }
 
 interface FormDataRef {
@@ -17,4 +19,8 @@ interface FormDataRef {
   data: FormDataProps;
 }
 
-export type { FieldDataProps, FormDataProps, FormDataRef };
+interface FormsPaginate {
+  data: FormDataRef[];
+}
+
+export type { FieldDataProps, FormDataProps, FormDataRef, FormsPaginate };

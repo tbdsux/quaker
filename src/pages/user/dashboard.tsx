@@ -10,19 +10,14 @@ import { UserLoading } from '@components/loading/user';
 import { fetcher } from '@lib/fetcher';
 import { useUser } from '@lib/wrapper/useUser';
 import { withPageAuthRequired } from '@lib/wrapper/withPageAuth';
+import { QueryFormsReponse } from 'pages/api/user/forms';
 
 const UserDashboard = withPageAuthRequired(() => {
   const { user } = useUser();
 
   // const user = useUser({ redirectTo: "/login" });
-  const { data } = useSWR('/api/user/forms', fetcher);
+  const { data: userForms } = useSWR<QueryFormsReponse>('/api/user/forms', fetcher);
   const [forms, setForms] = useState([]);
-
-  useEffect(() => {
-    if (data) {
-      setForms(data?.forms?.data);
-    }
-  }, [data]);
 
   const [modal, setModal] = useState(false);
 
@@ -33,7 +28,7 @@ const UserDashboard = withPageAuthRequired(() => {
   // }
 
   // loading info while trying to get all forms
-  if (!data && user) {
+  if (!userForms && user) {
     return <UserLoading />;
   }
 
@@ -60,9 +55,9 @@ const UserDashboard = withPageAuthRequired(() => {
               </div>
 
               <hr className="my-6" />
-              {forms && (
+              {userForms && (
                 <div className="flex flex-col w-5/6 mx-auto my-8">
-                  {forms.map((form) => (
+                  {userForms.forms.data.map((form) => (
                     <Link key={form.ts} href={`/user/dashboard/forms/${form.ref['@ref'].id}`}>
                       <a
                         className="py-4 border border-teal-500 hover:bg-teal-500 text-teal-900 hover:text-white my-2 px-4 rounded-md flex items-center justify-between"
