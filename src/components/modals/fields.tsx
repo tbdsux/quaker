@@ -1,8 +1,7 @@
-import { FieldQuestionInput } from '@components/forms/field-question';
 import { StringInputField } from '@components/forms/string-input';
 import { BaseModal } from '@components/shared/Modal';
-import { FormFieldTypes } from '@utils/form';
-import { ChangeEvent, Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
+import { ChangeEvent, useEffect, useRef, useState } from 'react';
+import { FormFieldTypes } from '~types/fields';
 import { FieldDataProps } from '~types/forms';
 
 import { ModalProps } from '~types/modals';

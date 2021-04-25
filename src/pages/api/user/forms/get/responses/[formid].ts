@@ -6,11 +6,11 @@ import { getTokenFromSession } from '@lib/hooks/getToken';
 import { strArray } from '@utils/utils';
 import { GET_REF } from 'fauna/ref';
 import { BaseApiQueryResponse } from '~types/query';
-import { FormReponseProps } from '~types/responses';
+import { FormResponseProps } from '~types/responses';
 
 interface QueryReponsesApi extends BaseApiQueryResponse {
   formExists: boolean;
-  responses?: FormReponseProps[];
+  responses?: FormResponseProps[];
   form?: object;
 }
 

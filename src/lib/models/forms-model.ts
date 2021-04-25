@@ -1,8 +1,7 @@
-import { answerFormData } from '@utils/form-data';
-import { AnswerDataFormProps } from '@utils/types/answers';
 import { Client, Expr } from 'faunadb';
 import { nanoid } from 'nanoid';
 import { FormDataProps, FormDataRef, FormsPaginate } from '~types/forms';
+import { FormResponseProps } from '~types/responses';
 import { q, getClient } from '../faunadb';
 
 export class FormsModel {
@@ -96,7 +95,7 @@ export class FormsModel {
       .catch(() => undefined);
   }
 
-  async submitFormAnswer(data: AnswerDataFormProps) {
+  async submitFormAnswer(data: FormResponseProps) {
     return this._client
       .query(
         q.Create(q.Collection('answers'), {

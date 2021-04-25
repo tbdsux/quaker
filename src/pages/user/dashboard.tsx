@@ -57,7 +57,7 @@ const UserDashboard = withPageAuthRequired(() => {
               <hr className="my-6" />
               {userForms && (
                 <div className="flex flex-col w-5/6 mx-auto my-8">
-                  {userForms.forms.data.map((form) => (
+                  {userForms.forms?.data.map((form) => (
                     <Link key={form.ts} href={`/user/dashboard/forms/${form.ref['@ref'].id}`}>
                       <a
                         className="py-4 border border-teal-500 hover:bg-teal-500 text-teal-900 hover:text-white my-2 px-4 rounded-md flex items-center justify-between"

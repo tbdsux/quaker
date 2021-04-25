@@ -1,11 +1,11 @@
 import { BaseModal } from '@components/shared/Modal';
 import RenderForm from '@components/shared/RenderForm';
-import { AnswerDataFormProps } from '@utils/types/answers';
 import { FieldDataProps } from '~types/forms';
 import { ModalProps } from '~types/modals';
+import { FormResponseProps } from '~types/responses';
 
 interface ViewResponseModalProps extends ModalProps {
-  response: AnswerDataFormProps;
+  response: FormResponseProps;
   formFields: FieldDataProps[];
 }
 

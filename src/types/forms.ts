@@ -1,5 +1,3 @@
-import { UserProps } from './user';
-
 interface FieldDataProps {
   question: string;
   type: string;

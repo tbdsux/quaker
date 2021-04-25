@@ -5,10 +5,9 @@ import useSWR from 'swr';
 
 import Layout from '@components/Layout';
 import Menu from '@components/dashboard/DashMenu';
-import { formData } from '@utils/form-data';
 import { fetcher } from '@lib/fetcher';
 import { UserLoading } from '@components/loading/user';
-import { FieldDataProps } from 'types/forms';
+import { FieldDataProps, FormDataProps } from 'types/forms';
 import { useUser } from '@lib/wrapper/useUser';
 import { joinFormUrl, PROJECT_SITE } from '@utils/site';
 import { withPageAuthRequired } from '@lib/wrapper/withPageAuth';
@@ -21,7 +20,7 @@ const ModifyForm = withPageAuthRequired(() => {
 
   const { user } = useUser();
 
-  const [form, setForm] = useState<formData>();
+  const [form, setForm] = useState<FormDataProps>();
   const [formFields, setFormFields] = useState([]);
 
   const [fieldModal, setFieldModal] = useState(false);

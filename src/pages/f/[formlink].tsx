@@ -9,17 +9,15 @@ import RenderForm from '@components/shared/RenderForm';
 
 import { fetcher } from '@lib/fetcher';
 
-import { formData } from '@utils/form-data';
-import { AnswerBodyFormProps } from '@utils/types/answers';
-
-import { FieldDataProps } from '~types/forms';
+import { FieldDataProps, FormDataProps } from '~types/forms';
+import { SubmitFormProps } from '~types/responses';
 
 const FormLinkRender = () => {
   const router = useRouter();
   const { formlink } = router.query;
   const { data } = useSWR(formlink ? `/api/forms/${formlink}` : null, fetcher);
   const submitBtn = useRef<HTMLButtonElement>(null);
-  const [form, setForm] = useState<formData>(null);
+  const [form, setForm] = useState<FormDataProps>(null);
 
   // ===> MAIN FUNCTIONS
   const handleSubmitForm = async (e: FormEvent<HTMLFormElement>) => {
@@ -36,10 +34,10 @@ const FormLinkRender = () => {
     });
 
     // form submit
-    const answerData: AnswerBodyFormProps = {
+    const answerData: SubmitFormProps = {
       formid: data.form.ref['@ref'].id,
       data: {
-        date: new Date(),
+        date: new Date().toISOString(),
         answers: answers,
         responseId: nanoid(40)
       }

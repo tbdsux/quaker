@@ -1,13 +1,12 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { FormsModel } from '@lib/models/forms-model';
-import { answerFormData } from '@utils/form-data';
 import methodHandler from '@utils/middleware/method-handler';
 import { getPublicToken } from '@lib/hooks/getToken';
-import { AnswerBodyFormProps, AnswerDataFormProps } from '@utils/types/answers';
 import { GET_REF } from 'fauna/ref';
+import { FormResponseProps, SubmitFormProps } from '~types/responses';
 
 async function submit_formAnswer(req: NextApiRequest, res: NextApiResponse) {
-  const form: AnswerBodyFormProps = req.body;
+  const form: SubmitFormProps = req.body;
 
   const formsModel = new FormsModel(getPublicToken());
 
@@ -21,7 +20,7 @@ async function submit_formAnswer(req: NextApiRequest, res: NextApiResponse) {
   }
 
   // submit form
-  const answer: AnswerDataFormProps = {
+  const answer: FormResponseProps = {
     form: formRef,
     data: form.data
   };

@@ -7,21 +7,17 @@ import useSWR from 'swr';
 import Menu from '@components/dashboard/DashMenu';
 import { useUser } from '@lib/wrapper/useUser';
 import { fetcher } from '@lib/fetcher';
-import { AnswerDataFormProps } from '@utils/types/answers';
 import { withPageAuthRequired } from '@lib/wrapper/withPageAuth';
 import { FormDataProps } from '~types/forms';
 import { ViewResponseModal } from '@components/modals/view-response';
-
-interface resp {
-  ref: object;
-  data: AnswerDataFormProps;
-}
+import { FormResponseProps, ResponseRefProps } from '~types/responses';
+import { UserLoading } from '@components/loading/user';
 
 const FormReponses = withPageAuthRequired(() => {
   const { user } = useUser();
 
   const [view, setView] = useState<boolean>(false);
-  const [viewResponse, setViewResponse] = useState<AnswerDataFormProps>(null);
+  const [viewResponse, setViewResponse] = useState<FormResponseProps>(null);
 
   const [delRefID, setDelRefID] = useState<string>(null);
   const [deleted, setDeleted] = useState<boolean>(false);
@@ -33,16 +29,16 @@ const FormReponses = withPageAuthRequired(() => {
   const [form, setForm] = useState<FormDataProps>();
 
   // main functions
-  const handleViewResponse = (resp: AnswerDataFormProps) => {
+  const handleViewResponse = (f: FormResponseProps) => {
     setView(true);
-    setViewResponse(resp);
+    setViewResponse(f);
   };
 
-  const handleRemoveResponse = async (resp: resp) => {
+  const handleRemoveResponse = async (f: ResponseRefProps) => {
     var tf = responses;
-    tf.splice(tf.indexOf(resp), 1);
+    tf.splice(tf.indexOf(f), 1);
 
-    setDelRefID(resp.ref['@ref'].id);
+    setDelRefID(f.ref['@ref'].id);
     setResponses(tf);
     setDeleted(true);
   };
@@ -90,10 +86,12 @@ const FormReponses = withPageAuthRequired(() => {
     }
   }
 
+  if (!data) return <UserLoading />;
+
   return (
     <>
       {user && form && (
-        <Layout title="Form Responses">
+        <Layout title={`${form.name} | Form Responses`}>
           <ViewResponseModal
             open={view}
             setOpen={setView}
@@ -116,8 +114,8 @@ const FormReponses = withPageAuthRequired(() => {
               <div className="py-4 px-8">
                 {responses.length > 0 ? (
                   <ul>
-                    {responses.map((resp: resp) => (
-                      <li key={responses.indexOf(resp)} className="p-4 border rounded-md my-2">
+                    {responses.map((resp: ResponseRefProps, index) => (
+                      <li key={index} className="p-4 border rounded-md my-2">
                         <div className="w-full flex items-center justify-between">
                           <button onClick={() => handleViewResponse(resp.data)}>
                             {resp.data.data.responseId}
