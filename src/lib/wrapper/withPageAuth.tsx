@@ -38,10 +38,9 @@ type WithPageAuthProps = <P extends object>(
 
 const withPageAuthForm: WithPageAuthProps = (PageComponent, options) => {
   return function withPageAuth(props): JSX.Element {
-    const mounted = useHasMounted();
-    const { isLoggedIn } = useUser();
+    const { isLoggedIn, isLoading } = useUser();
 
-    if (mounted && isLoggedIn) {
+    if (!isLoading && isLoggedIn) {
       Router.push(options?.redirectTo ? options.redirectTo : '/user/dashboard');
     }
 
