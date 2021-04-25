@@ -1,5 +1,4 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { getLoginSession } from '@lib/auth';
 import { FormsModel } from '@lib/models/forms-model';
 import methodHandler from '@utils/middleware/method-handler';
 import sessionHandler from '@utils/middleware/session-handler';

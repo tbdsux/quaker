@@ -2,7 +2,6 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { FormsModel } from '@lib/models/forms-model';
 import methodHandler from '@utils/middleware/method-handler';
 import sessionHandler from '@utils/middleware/session-handler';
-import { getForm } from '@utils/form';
 import { getTokenFromSession } from '@lib/hooks/getToken';
 import { GET_REF } from 'fauna/ref';
 

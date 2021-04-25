@@ -4,7 +4,7 @@ import { FormsModel } from '@lib/models/forms-model';
 import methodHandler from '@utils/middleware/method-handler';
 import sessionHandler from '@utils/middleware/session-handler';
 import { BaseApiQueryResponse } from '~types/query';
-import { FormDataRef, FormsPaginate } from '~types/forms';
+import { FormsPaginate } from '~types/forms';
 import { getTokenFromSession } from '@lib/hooks/getToken';
 
 interface QueryFormsReponse extends BaseApiQueryResponse {

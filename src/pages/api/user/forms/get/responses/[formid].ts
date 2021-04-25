@@ -7,7 +7,6 @@ import { strArray } from '@utils/utils';
 import { GET_REF } from 'fauna/ref';
 import { BaseApiQueryResponse } from '~types/query';
 import { FormReponseProps } from '~types/responses';
-import { FormDataProps } from '~types/forms';
 
 interface QueryReponsesApi extends BaseApiQueryResponse {
   formExists: boolean;
