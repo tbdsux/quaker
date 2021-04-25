@@ -8,4 +8,6 @@ async function user(req: NextApiRequest, res: NextApiResponse) {
   return res.status(200).json({ user: session || null });
 }
 
+// there is no need to wrap this with sessionHandler
+// since, it just returns the user's instance,
 export default methodHandler(user, ['GET']);
