@@ -1,7 +1,9 @@
+import { ToastWrapper } from '@components/toast';
 import { useHasMounted } from '@lib/hooks/useHasMounted';
 import { useUser } from '@lib/wrapper/useUser';
 import Link from 'next/link';
 import React from 'react';
+import { toast } from 'react-toastify';
 
 const DashMenu = React.memo(() => {
   const mounted = useHasMounted;
@@ -11,6 +13,7 @@ const DashMenu = React.memo(() => {
 
   return (
     <>
+      <ToastWrapper />
       <nav className="py-4 w-5/6 mx-auto flex items-center justify-between">
         <div>
           <h1 className="text-3xl tracking-wide font-extrabold text-teal-600">QuaKer</h1>
@@ -23,6 +26,7 @@ const DashMenu = React.memo(() => {
           </li>
           <li className="pl-8 text-lg">
             <a
+              onClick={() => toast.info('Signing out...')}
               href="/api/logout"
               className="font-bold tracking-wide text-coolGray-700 hover:text-teal-500"
             >

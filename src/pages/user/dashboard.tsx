@@ -17,7 +17,6 @@ const UserDashboard = withPageAuthRequired(() => {
 
   // const user = useUser({ redirectTo: "/login" });
   const { data: userForms } = useSWR<QueryFormsReponse>('/api/user/forms', fetcher);
-  const [forms, setForms] = useState([]);
 
   const [modal, setModal] = useState(false);
 

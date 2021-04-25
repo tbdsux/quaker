@@ -1,10 +1,11 @@
-import { ReactNode } from 'react'
-import Head from 'next/head'
+import { ReactNode } from 'react';
+import Head from 'next/head';
+import 'react-toastify/dist/ReactToastify.css';
 
 type LayoutProps = {
-  children?: ReactNode
-  title?: string
-}
+  children?: ReactNode;
+  title?: string;
+};
 
 const Layout = ({ children, title }: LayoutProps) => {
   return (
@@ -17,7 +18,7 @@ const Layout = ({ children, title }: LayoutProps) => {
 
       <main className="antialiased">{children}</main>
     </div>
-  )
-}
+  );
+};
 
-export default Layout
+export default Layout;

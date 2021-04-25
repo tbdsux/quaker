@@ -2,6 +2,8 @@ import { Dispatch, FormEvent, SetStateAction, useRef } from 'react';
 import Router from 'next/router';
 
 import { BaseModal } from '@components/shared/Modal';
+import { toast, ToastContainer } from 'react-toastify';
+import { ToastWrapper } from '@components/toast';
 
 type NewFormModalProps = {
   modal: boolean;
@@ -10,9 +12,15 @@ type NewFormModalProps = {
 
 export const NewFormModal = ({ modal, setModal }: NewFormModalProps) => {
   const formName = useRef<HTMLInputElement>(null);
+  const createBtnRef = useRef<HTMLButtonElement>(null);
 
   const userCreateForm = async (e: FormEvent) => {
     e.preventDefault();
+
+    // show notifs status
+    toast.info('Creating form...');
+    createBtnRef.current.innerHTML = 'Creating...';
+    createBtnRef.current.disabled = true;
 
     const dat = {
       formName: formName.current.value
@@ -44,6 +52,8 @@ export const NewFormModal = ({ modal, setModal }: NewFormModalProps) => {
 
   return (
     <>
+      <ToastWrapper />
+
       {modal ? (
         <BaseModal
           className="w-1/2 mx-auto rounded-md"
@@ -69,8 +79,9 @@ export const NewFormModal = ({ modal, setModal }: NewFormModalProps) => {
               <div className="mt-6 flex flex-row justify-end">
                 <button
                   type="submit"
+                  ref={createBtnRef}
                   onClick={userCreateForm}
-                  className="mr-1 py-2 px-6 rounded-md text-lg bg-teal-500 hover:bg-teal-600 text-white"
+                  className="mr-1 py-2 px-6 rounded-md text-lg bg-teal-500 hover:bg-teal-600 text-white disabled:opacity-70 disabled:bg-teal-500"
                 >
                   Create
                 </button>

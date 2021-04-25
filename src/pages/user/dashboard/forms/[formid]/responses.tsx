@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import Link from 'next/link';
 import Error from 'next/error';
 import Layout from '@components/Layout';
-import useSWR from 'swr';
+import useSWR, { mutate } from 'swr';
 import Menu from '@components/dashboard/DashMenu';
 import { useUser } from '@lib/wrapper/useUser';
 import { fetcher } from '@lib/fetcher';
@@ -12,6 +12,8 @@ import { FormDataProps } from '~types/forms';
 import { ViewResponseModal } from '@components/modals/view-response';
 import { FormResponseProps, ResponseRefProps } from '~types/responses';
 import { UserLoading } from '@components/loading/user';
+import { toast } from 'react-toastify';
+import { ToastWrapper } from '@components/toast';
 
 const FormReponses = withPageAuthRequired(() => {
   const { user } = useUser();
@@ -35,6 +37,7 @@ const FormReponses = withPageAuthRequired(() => {
   };
 
   const handleRemoveResponse = async (f: ResponseRefProps) => {
+    toast.info('Removing response...');
     var tf = responses;
     tf.splice(tf.indexOf(f), 1);
 
@@ -58,6 +61,10 @@ const FormReponses = withPageAuthRequired(() => {
         .then((r) => r.json())
         .then((res) => {
           if (res.deleted) {
+            mutate(`/api/user/forms/get/responses/${formid}`);
+
+            toast.success('Successfully removed response...');
+
             setDeleted(false);
             setDelRefID(null);
           } else {
@@ -90,6 +97,8 @@ const FormReponses = withPageAuthRequired(() => {
 
   return (
     <>
+      <ToastWrapper />
+
       {user && form && (
         <Layout title={`${form.name} | Form Responses`}>
           <ViewResponseModal

@@ -7,6 +7,8 @@ import Menu from '@components/shared/Menu';
 
 import { useSession } from '@lib/wrapper/useSession';
 import { withPageAuthForm } from '@lib/wrapper/withPageAuth';
+import { ToastWrapper } from '@components/toast';
+import { toast, ToastContainer } from 'react-toastify';
 
 const Login = withPageAuthForm(() => {
   const { setSession } = useSession();
@@ -26,6 +28,8 @@ const Login = withPageAuthForm(() => {
     const body = {
       email: e.currentTarget.email.value
     };
+
+    toast.info('Authenticating...');
 
     // login to magic
     const magic = new Magic(process.env.NEXT_PUBLIC_MAGIC_PUBLISHABLE_KEY);
@@ -61,6 +65,16 @@ const Login = withPageAuthForm(() => {
 
   return (
     <Layout title="User Login | quaker">
+      <ToastContainer
+        position="top-right"
+        autoClose={false}
+        newestOnTop
+        closeOnClick={false}
+        rtl={false}
+        pauseOnFocusLoss
+        draggable={false}
+      />
+
       <Menu />
 
       <div className="py-24 w-11/12 mx-auto">

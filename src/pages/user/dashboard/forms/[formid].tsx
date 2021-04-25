@@ -1,7 +1,7 @@
 import { useState, useEffect, ChangeEvent, FormEvent, useRef } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
-import useSWR from 'swr';
+import useSWR, { mutate } from 'swr';
 
 import Layout from '@components/Layout';
 import Menu from '@components/dashboard/DashMenu';
@@ -12,6 +12,8 @@ import { useUser } from '@lib/wrapper/useUser';
 import { joinFormUrl, PROJECT_SITE } from '@utils/site';
 import { withPageAuthRequired } from '@lib/wrapper/withPageAuth';
 import { FieldsModal } from '@components/modals/fields';
+import { toast } from 'react-toastify';
+import { ToastWrapper } from '@components/toast';
 
 const ModifyForm = withPageAuthRequired(() => {
   // MAIN STATES
@@ -28,11 +30,9 @@ const ModifyForm = withPageAuthRequired(() => {
   // END MAIN STATES
 
   // FORM FIELD STATES
-  const [fieldType, setFieldType] = useState('field-type');
   const [updated, setUpdated] = useState(false);
   const [modifyMode, setModifyMode] = useState(false);
   const [modifyField, setModifyField] = useState<FieldDataProps>(Object);
-  const fieldQuestion = useRef<HTMLInputElement>(null);
   // END FORM FIELD STATES
 
   // ====> MAIN FUNCTIONS
@@ -65,6 +65,7 @@ const ModifyForm = withPageAuthRequired(() => {
   // update form fields (call api)
   useEffect(() => {
     if (updated) {
+      toast.info('Saving form fields...');
       fetch('/api/user/forms/update/fields', {
         method: 'PUT',
         headers: {
@@ -78,9 +79,16 @@ const ModifyForm = withPageAuthRequired(() => {
         .then((res) => res.json())
         .then((data) => {
           if (data.updated) {
+            mutate(`/api/user/forms/get/${formid}`);
+
+            toast.success('Sucessfully saved form...');
+
             setUpdated(false);
+          } else {
+            toast.error('There was a problem while trying to save form...');
           }
-        });
+        })
+        .catch(() => toast.error('There was a problem while trying to save form...'));
     }
   }, [updated, formFields, formid]);
   // ====> END MAIN FUNCTIONS
@@ -102,6 +110,8 @@ const ModifyForm = withPageAuthRequired(() => {
 
   return (
     <>
+      <ToastWrapper />
+
       {user && form && (
         <Layout title={`${form.name} | Modify Form - Quaker`}>
           <FieldsModal
