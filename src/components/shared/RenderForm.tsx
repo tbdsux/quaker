@@ -10,13 +10,13 @@ const RenderForm = ({ formfields, formresp }: FormRenderProps) => {
     <>
       {formfields.map((field: FieldDataProps) => (
         <div className="my-2" key={formfields.indexOf(field)}>
-          <label className="text-lg tracking-wide mb-1" htmlFor={field.question}>
+          <label className={`tracking-wide mb-1`} htmlFor={field.question}>
             {field.question}
           </label>
           {field.type == 'user-input' ? (
             <div>
               <input
-                className="py-2 text-lg border px-4 rounded-md w-full"
+                className="py-2 border px-4 rounded-md w-full"
                 name={field.question}
                 type="text"
                 defaultValue={formresp ? formresp[field.question] : null}
@@ -26,7 +26,7 @@ const RenderForm = ({ formfields, formresp }: FormRenderProps) => {
           ) : field.type == 'text-input' ? (
             <div>
               <textarea
-                className="py-2 text-lg rounded-md px-4 border h-32 w-full"
+                className="py-2 rounded-md px-4 border h-32 w-full"
                 name={field.question}
                 defaultValue={formresp ? formresp[field.question] : null}
                 readOnly={formresp ? true : false}

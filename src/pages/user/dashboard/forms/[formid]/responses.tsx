@@ -14,6 +14,7 @@ import { FormResponseProps, ResponseRefProps } from '~types/responses';
 import { UserLoading } from '@components/loading/user';
 import { toast } from 'react-toastify';
 import { ToastWrapper } from '@components/toast';
+import { TrashIcon } from '@heroicons/react/outline';
 
 const FormReponses = withPageAuthRequired(() => {
   const { user } = useUser();
@@ -124,18 +125,27 @@ const FormReponses = withPageAuthRequired(() => {
                 {responses.length > 0 ? (
                   <ul>
                     {responses.map((resp: ResponseRefProps, index) => (
-                      <li key={index} className="p-4 border rounded-md my-2">
-                        <div className="w-full flex items-center justify-between">
-                          <button onClick={() => handleViewResponse(resp.data)}>
+                      <li
+                        key={index}
+                        className="group p-4 hover:border-teal-600 border rounded-md my-2"
+                      >
+                        <div className="w-full flex items-center justify-between text-gray-800">
+                          <button
+                            onClick={() => handleViewResponse(resp.data)}
+                            className="group-hover:text-teal-600"
+                          >
                             {resp.data.data.responseId}
                           </button>
                           <div className="flex items-center">
-                            <p>{new Date(resp.data.data.date).toUTCString()}</p>
+                            <p className="text-sm text-gray-600">
+                              {new Date(resp.data.data.date).toUTCString()} |
+                            </p>
                             <button
                               onClick={() => handleRemoveResponse(resp)}
-                              className="ml-2 border p-1 text-sm font-light"
+                              className="ml-2 hover:text-rose-500"
+                              title="Remove Response"
                             >
-                              delete
+                              <TrashIcon className="h-5 w-5" />
                             </button>
                           </div>
                         </div>

@@ -56,15 +56,15 @@ const ViewResponseModal = ({ open, setOpen, response, formFields }: ViewResponse
                 <Dialog.Description>
                   <p className="text-sm mt-2 tracking-wide">
                     Submitted Date:{' '}
-                    <span className="underline">{new Date(response.data.date).toUTCString()}</span>
+                    <span className="underline">{new Date(response?.data.date).toUTCString()}</span>
                   </p>
                 </Dialog.Description>
 
                 <hr className="my-4" />
 
                 <div className="w-11/12 mx-auto">
-                  <div className="w-full p-6 my-2 bg-gray-100 mx-auto">
-                    <RenderForm formfields={formFields} formresp={response.data.answers} />
+                  <div className="w-full p-6 my-2 bg-gray-100 mx-auto rounded-lg">
+                    <RenderForm formfields={formFields} formresp={response?.data.answers} />
                   </div>
                 </div>
 
