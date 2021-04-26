@@ -16,23 +16,20 @@ async function update_formFields(
   res: NextApiResponse<QueryUpdateFormResponse>
 ) {
   const { formid, fields } = req.body;
-
   const token = await getTokenFromSession(req);
 
   // execute query
   const formsModel = new FormsModel(token);
   const formRef = GET_REF('forms', strArray(formid));
-  const form = formsModel.updateFormFieldsByRef(formRef, fields);
+  const form = await formsModel.updateFormFieldsByRef(formRef, fields);
 
   // query result is undefined
   if (!form) {
-    return res
-      .status(500)
-      .json({
-        error: true,
-        message: 'There was a problem while trying to update form fields.',
-        updated: false
-      });
+    return res.status(500).json({
+      error: true,
+      message: 'There was a problem while trying to update form fields.',
+      updated: false
+    });
   }
 
   return res

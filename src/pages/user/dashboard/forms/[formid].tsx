@@ -1,19 +1,67 @@
-import { useState, useEffect, ChangeEvent, FormEvent, useRef } from 'react';
+// learned from: https://dev.to/elisealcala/react-context-with-usereducer-and-typescript-4obm
+
+import { useState, useEffect, ChangeEvent, FormEvent, useRef, useReducer } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import useSWR, { mutate } from 'swr';
+import { toast } from 'react-toastify';
 
 import Layout from '@components/Layout';
 import Menu from '@components/dashboard/DashMenu';
-import { fetcher } from '@lib/fetcher';
-import { UserLoading } from '@components/loading/user';
-import { FieldDataProps, FormDataProps } from 'types/forms';
-import { useUser } from '@lib/wrapper/useUser';
-import { joinFormUrl, PROJECT_SITE } from '@utils/site';
-import { withPageAuthRequired } from '@lib/wrapper/withPageAuth';
 import { FieldsModal } from '@components/modals/fields';
-import { toast } from 'react-toastify';
 import { ToastWrapper } from '@components/toast';
+import { UserLoading } from '@components/loading/user';
+
+import { fetcher } from '@lib/fetcher';
+import { useUser } from '@lib/wrapper/useUser';
+import { withPageAuthRequired } from '@lib/wrapper/withPageAuth';
+
+import { joinFormUrl, PROJECT_SITE } from '@utils/site';
+import { FieldDataProps, FormDataProps } from 'types/forms';
+
+import { SaveIcon } from '@heroicons/react/outline';
+
+type FieldActions =
+  | { type: 'add'; field: FieldDataProps }
+  | { type: 'remove'; field: FieldDataProps }
+  | { type: 'modify'; field: FieldDataProps; index: number }
+  | { type: 'set'; fields: FieldDataProps[] };
+
+type fieldState = {
+  fields: FieldDataProps[];
+};
+
+const initFields: fieldState = {
+  fields: []
+};
+
+const fieldsReducer = (state: fieldState, action: FieldActions) => {
+  switch (action.type) {
+    // add field
+    case 'add':
+      return {
+        fields: [...state.fields, action.field]
+      };
+    // remove field
+    case 'remove':
+      // NOTE: I am having issues with splice, so I this will do...
+      return {
+        fields: state.fields.filter((item) => item !== action.field)
+      };
+    // modify field
+    case 'modify':
+      state.fields.splice(action.index, 1);
+      state.fields.splice(action.index, 0, action.field);
+      return state;
+    // set field
+    case 'set':
+      return {
+        fields: action.fields
+      };
+    default:
+      return state;
+  }
+};
 
 const ModifyForm = withPageAuthRequired(() => {
   // MAIN STATES
@@ -23,75 +71,57 @@ const ModifyForm = withPageAuthRequired(() => {
   const { user } = useUser();
 
   const [form, setForm] = useState<FormDataProps>();
-  const [formFields, setFormFields] = useState([]);
+  const [{ fields }, dispatch] = useReducer(fieldsReducer, initFields);
 
   const [fieldModal, setFieldModal] = useState(false);
 
   // END MAIN STATES
 
   // FORM FIELD STATES
-  const [updated, setUpdated] = useState(false);
   const [modifyMode, setModifyMode] = useState(false);
   const [modifyField, setModifyField] = useState<FieldDataProps>(Object);
   // END FORM FIELD STATES
 
   // ====> MAIN FUNCTIONS
   const handleAddFormField = (fd: FieldDataProps) => {
+    dispatch({ type: 'add', field: fd });
     setFieldModal(false);
-    setFormFields([...formFields, fd]);
-    setUpdated(true);
-  };
-
-  const handleRemoveFormField = (fd: FieldDataProps) => {
-    var tf = formFields;
-    tf.splice(tf.indexOf(fd), 1);
-
-    setFormFields(tf);
-    setUpdated(true);
   };
 
   const handleModifyFormField = (old: FieldDataProps, fd: FieldDataProps) => {
-    const index = formFields.indexOf(old);
-    const f = formFields;
-
-    f.splice(index, 1);
-    f.splice(index, 0, fd);
-
+    const index = fields.indexOf(old);
+    dispatch({ type: 'modify', index: index, field: fd });
     setFieldModal(false);
-    setFormFields(f);
-    setUpdated(true);
   };
 
-  // update form fields (call api)
-  useEffect(() => {
-    if (updated) {
-      toast.info('Saving form fields...');
-      fetch('/api/user/forms/update/fields', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          formid: formid,
-          fields: formFields
-        })
+  const handleRemoveFormField = (fd: FieldDataProps) => {
+    dispatch({ type: 'remove', field: fd });
+  };
+
+  const handleUpdateFormFields = () => {
+    toast.info('Saving form fields...');
+    fetch('/api/user/forms/update/fields', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        formid: formid,
+        fields: fields
       })
-        .then((res) => res.json())
-        .then((data) => {
-          if (data.updated) {
-            mutate(`/api/user/forms/get/${formid}`);
-
-            toast.success('Sucessfully saved form...');
-
-            setUpdated(false);
-          } else {
-            toast.error('There was a problem while trying to save form...');
-          }
-        })
-        .catch(() => toast.error('There was a problem while trying to save form...'));
-    }
-  }, [updated, formFields, formid]);
-  // ====> END MAIN FUNCTIONS
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.updated) {
+          // TODO: better implementation
+          // mutate(`/api/user/forms/get/${formid}`);
+          toast.success('Sucessfully saved form...');
+        } else {
+          toast.error('There was a problem while trying to save form...');
+        }
+      })
+      .catch(() => toast.error('There was a problem while trying to save form...'));
+  };
 
   // UTIL FUNCTIONS, .THIS ONLY WORKS IF IT IS AT THE END
   const { data } = useSWR(formid ? `/api/user/forms/get/${formid}` : null, fetcher);
@@ -99,7 +129,7 @@ const ModifyForm = withPageAuthRequired(() => {
   useEffect(() => {
     if (data) {
       setForm(data.form?.data);
-      setFormFields(data.form?.data.fields);
+      dispatch({ type: 'set', fields: data.form?.data.fields });
     }
   }, [data]);
 
@@ -160,13 +190,20 @@ const ModifyForm = withPageAuthRequired(() => {
 
             <hr className="my-6" />
 
-            <div className="bg-gray-50 p-8">
+            <div className="bg-gray-100 rounded-md p-8 relative">
+              {/* use manual form update */}
+              <button
+                className="absolute top-0 right-0 mt-2 mr-2 inline-flex bg-teal-400 hover:bg-teal-500 p-2 rounded-md text-white text-sm"
+                onClick={handleUpdateFormFields}
+              >
+                <SaveIcon className="h-4 w-4 mr-1" /> Save
+              </button>
               <h4 className="mb-4 ml-4">Preview: </h4>
               <div className="w-2/3 mx-auto">
-                {formFields.map((field, index) => (
+                {fields.map((field, index) => (
                   <div key={index} className="flex flex-col my-3 p-2">
                     <div className="flex items-center justify-between">
-                      <p className="text-lg tracking-wide mb-1">{field.question}</p>
+                      <p className="tracking-wide mb-1">{field.question}</p>
                       <div>
                         <button
                           onClick={() => {
