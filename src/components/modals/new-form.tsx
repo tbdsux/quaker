@@ -1,15 +1,10 @@
-import React, { Dispatch, FormEvent, Fragment, SetStateAction, useRef, useState } from 'react';
+import React, { FormEvent, Fragment, useRef, useState } from 'react';
+import { Dialog, Transition } from '@headlessui/react';
+import { toast } from 'react-toastify';
+
 import Router from 'next/router';
 
-import { BaseModal } from '@components/shared/Modal';
-import { toast } from 'react-toastify';
 import { ToastWrapper } from '@components/toast';
-import { Dialog, Transition } from '@headlessui/react';
-
-type NewFormModalProps = {
-  modal: boolean;
-  setModal: Dispatch<SetStateAction<boolean>>;
-};
 
 export const NewFormModal = () => {
   const [open, setOpen] = useState(false);
@@ -139,49 +134,6 @@ export const NewFormModal = () => {
           </div>
         </Dialog>
       </Transition>
-
-      {/* {modal ? (
-        <BaseModal
-          className="w-1/2 mx-auto rounded-md"
-          defineXButton={true}
-          xButtonFunction={() => {
-            setModal(false);
-          }}
-        >
-          <h3 className="text-2xl font-bold text-coolGray-700">Create a new form</h3>
-          <div className="mt-8">
-            <form onSubmit={userCreateForm}>
-              <div className="flex flex-col w-full">
-                <label htmlFor="form-title" className="mb-2 text-lg tracking-wide">
-                  What's the name / title of your form?
-                </label>
-                <input
-                  ref={formName}
-                  type="text"
-                  className="py-2 px-4 text-xl border-2 rounded-md"
-                  placeholder="Your form name or title"
-                />
-              </div>
-              <div className="mt-6 flex flex-row justify-end">
-                <button
-                  type="submit"
-                  ref={createBtnRef}
-                  onClick={userCreateForm}
-                  className="mr-1 py-2 px-6 rounded-md text-lg bg-teal-500 hover:bg-teal-600 text-white disabled:opacity-70 disabled:bg-teal-500"
-                >
-                  Create
-                </button>
-                <button
-                  onClick={() => setModal(false)}
-                  className="py-2 px-6 rounded-md text-lg bg-gray-500 hover:bg-gray-600 text-white"
-                >
-                  Cancel
-                </button>
-              </div>
-            </form>
-          </div>
-        </BaseModal>
-      ) : null} */}
     </>
   );
 };

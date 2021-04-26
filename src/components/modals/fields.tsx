@@ -1,11 +1,11 @@
-import { StringInputField } from '@components/forms/string-input';
-import { BaseModal } from '@components/shared/Modal';
+import React, { Fragment, useEffect, useRef, useState } from 'react';
 import { Transition, Dialog, Listbox } from '@headlessui/react';
 import { CheckIcon, SelectorIcon } from '@heroicons/react/solid';
-import React, { ChangeEvent, Fragment, useEffect, useRef, useState } from 'react';
+
+import { StringInputField } from '@components/forms/string-input';
+
 import { FormFieldObject, FormFieldTypes } from '~types/fields';
 import { FieldDataProps } from '~types/forms';
-
 import { ModalProps } from '~types/modals';
 
 interface ModifyFormFieldsProps extends ModalProps {

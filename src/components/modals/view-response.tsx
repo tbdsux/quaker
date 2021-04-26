@@ -1,7 +1,8 @@
-import { BaseModal } from '@components/shared/Modal';
-import RenderForm from '@components/shared/RenderForm';
-import { Transition, Dialog } from '@headlessui/react';
 import React, { Fragment } from 'react';
+import { Transition, Dialog } from '@headlessui/react';
+
+import RenderForm from '@components/shared/RenderForm';
+
 import { FieldDataProps } from '~types/forms';
 import { ModalProps } from '~types/modals';
 import { FormResponseProps } from '~types/responses';
