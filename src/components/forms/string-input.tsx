@@ -7,7 +7,7 @@ interface FormFieldQuestionProps extends FieldQuestionInputProps {
 const StringInputField = ({ label, questionRef, defaultValue }: FormFieldQuestionProps) => {
   return (
     <div>
-      <h2 className="text-lg my-3 font-bold tracking-wide uppercase text-teal-800">{label}</h2>
+      <h2 className="text-lg mb-2 font-bold tracking-wide uppercase text-teal-800">{label}</h2>
       <FieldQuestionInput questionRef={questionRef} defaultValue={defaultValue} />
     </div>
   );

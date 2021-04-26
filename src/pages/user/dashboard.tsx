@@ -36,22 +36,10 @@ const UserDashboard = withPageAuthRequired(() => {
       {user && (
         <div>
           <Layout title="Dashboard | QuaKer">
-            {/* modals in here */}
-            <NewFormModal modal={modal} setModal={setModal} />
-
             <Menu />
 
             <div className="w-11/12 mx-auto">
-              <div>
-                <div className="mt-8">
-                  <button
-                    onClick={() => setModal(true)}
-                    className="bg-teal-500 hover:bg-teal-600 text-white py-3 px-8"
-                  >
-                    Create New Form
-                  </button>
-                </div>
-              </div>
+              <NewFormModal />
 
               <hr className="my-6" />
               {userForms && (

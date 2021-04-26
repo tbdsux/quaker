@@ -13,4 +13,10 @@ const FormFieldTypes = [
   }
 ];
 
-export { FormFieldTypes };
+const FormFieldObject = {
+  'user-input': FormFieldTypes[0],
+  'text-input': FormFieldTypes[1],
+  'multiple-choice': FormFieldTypes[2]
+};
+
+export { FormFieldTypes, FormFieldObject };
