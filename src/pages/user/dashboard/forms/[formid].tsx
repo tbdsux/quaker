@@ -1,5 +1,3 @@
-// learned from: https://dev.to/elisealcala/react-context-with-usereducer-and-typescript-4obm
-
 import { useState, useEffect, ChangeEvent, FormEvent, useRef, useReducer } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
@@ -15,53 +13,13 @@ import { UserLoading } from '@components/loading/user';
 import { fetcher } from '@lib/fetcher';
 import { useUser } from '@lib/wrapper/useUser';
 import { withPageAuthRequired } from '@lib/wrapper/withPageAuth';
+import { FieldsReducer, InitFields } from '@lib/fields-reducer';
 
 import { joinFormUrl, PROJECT_SITE } from '@utils/site';
 import { FieldDataProps, FormDataProps } from 'types/forms';
 
 import { SaveIcon } from '@heroicons/react/outline';
-
-type FieldActions =
-  | { type: 'add'; field: FieldDataProps }
-  | { type: 'remove'; field: FieldDataProps }
-  | { type: 'modify'; field: FieldDataProps; index: number }
-  | { type: 'set'; fields: FieldDataProps[] };
-
-type fieldState = {
-  fields: FieldDataProps[];
-};
-
-const initFields: fieldState = {
-  fields: []
-};
-
-const fieldsReducer = (state: fieldState, action: FieldActions) => {
-  switch (action.type) {
-    // add field
-    case 'add':
-      return {
-        fields: [...state.fields, action.field]
-      };
-    // remove field
-    case 'remove':
-      // NOTE: I am having issues with splice, so I this will do...
-      return {
-        fields: state.fields.filter((item) => item !== action.field)
-      };
-    // modify field
-    case 'modify':
-      state.fields.splice(action.index, 1);
-      state.fields.splice(action.index, 0, action.field);
-      return state;
-    // set field
-    case 'set':
-      return {
-        fields: action.fields
-      };
-    default:
-      return state;
-  }
-};
+import { useHasMounted } from '@lib/hooks/useHasMounted';
 
 const ModifyForm = withPageAuthRequired(() => {
   // MAIN STATES
@@ -71,7 +29,7 @@ const ModifyForm = withPageAuthRequired(() => {
   const { user } = useUser();
 
   const [form, setForm] = useState<FormDataProps>();
-  const [{ fields }, dispatch] = useReducer(fieldsReducer, initFields);
+  const [{ fields }, dispatch] = useReducer(FieldsReducer, InitFields);
 
   const [fieldModal, setFieldModal] = useState(false);
 
@@ -79,26 +37,38 @@ const ModifyForm = withPageAuthRequired(() => {
 
   // FORM FIELD STATES
   const [modifyMode, setModifyMode] = useState(false);
-  const [modifyField, setModifyField] = useState<FieldDataProps>(Object);
+  const [modifyField, setModifyField] = useState<FieldDataProps>();
+  const [saveMsg, setSaveMsg] = useState('Save');
+  const [saved, setSaved] = useState(true);
   // END FORM FIELD STATES
 
   // ====> MAIN FUNCTIONS
   const handleAddFormField = (fd: FieldDataProps) => {
     dispatch({ type: 'add', field: fd });
     setFieldModal(false);
+    // enable button
+    setSaved(false);
+    setSaveMsg('Save');
   };
 
   const handleModifyFormField = (old: FieldDataProps, fd: FieldDataProps) => {
     const index = fields.indexOf(old);
     dispatch({ type: 'modify', index: index, field: fd });
     setFieldModal(false);
+    // enable button
+    setSaved(false);
+    setSaveMsg('Save');
   };
 
   const handleRemoveFormField = (fd: FieldDataProps) => {
     dispatch({ type: 'remove', field: fd });
+    // enable button
+    setSaved(false);
+    setSaveMsg('Save');
   };
 
   const handleUpdateFormFields = () => {
+    setSaveMsg('Saving...');
     toast.info('Saving form fields...');
     fetch('/api/user/forms/update/fields', {
       method: 'PUT',
@@ -116,6 +86,8 @@ const ModifyForm = withPageAuthRequired(() => {
           // TODO: better implementation
           // mutate(`/api/user/forms/get/${formid}`);
           toast.success('Sucessfully saved form...');
+          setSaved(true);
+          setSaveMsg('Saved!');
         } else {
           toast.error('There was a problem while trying to save form...');
         }
@@ -193,10 +165,12 @@ const ModifyForm = withPageAuthRequired(() => {
             <div className="bg-gray-100 rounded-md p-8 relative">
               {/* use manual form update */}
               <button
-                className="absolute top-0 right-0 mt-2 mr-2 inline-flex bg-teal-400 hover:bg-teal-500 p-2 rounded-md text-white text-sm"
+                className="disabled:opacity-70 absolute top-0 right-0 mt-2 mr-2 inline-flex bg-teal-400 hover:bg-teal-500 p-2 rounded-md text-white text-sm"
                 onClick={handleUpdateFormFields}
+                disabled={saved}
+                title="Save Form"
               >
-                <SaveIcon className="h-4 w-4 mr-1" /> Save
+                <SaveIcon className="h-4 w-4 mr-1" /> {saveMsg}
               </button>
               <h4 className="mb-4 ml-4">Preview: </h4>
               <div className="w-2/3 mx-auto">
