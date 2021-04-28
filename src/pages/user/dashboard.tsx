@@ -50,8 +50,8 @@ const UserDashboard = withPageAuthRequired(() => {
                         className="py-4 border border-teal-500 hover:bg-teal-500 text-teal-900 hover:text-white my-2 px-4 rounded-md flex items-center justify-between"
                         title={`View form ${form.data.name}`}
                       >
-                        <p className="text-xl font-bold tracking-wide">{form.data.name}</p>
-                        <p className="text-lg">{new Date(form.data.createdDate).toUTCString()}</p>
+                        <p className="text-lg font-bold tracking-wide">{form.data.name}</p>
+                        <p className="text-sm">{new Date(form.data.createdDate).toUTCString()}</p>
                       </a>
                     </Link>
                   ))}
