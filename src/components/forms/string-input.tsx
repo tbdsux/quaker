@@ -14,3 +14,4 @@ const StringInputField = ({ label, questionRef, defaultValue }: FormFieldQuestio
 };
 
 export { StringInputField };
+export type { FormFieldQuestionProps };

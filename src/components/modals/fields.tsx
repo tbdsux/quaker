@@ -7,6 +7,7 @@ import { StringInputField } from '@components/forms/string-input';
 import { FormFieldObject, FormFieldTypes } from '~types/fields';
 import { FieldDataProps } from '~types/forms';
 import { ModalProps } from '~types/modals';
+import { MultipleChoice } from '@components/forms/multiple-choice';
 
 interface ModifyFormFieldsProps extends ModalProps {
   modify: boolean;
@@ -92,7 +93,7 @@ const FieldsModal = ({
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
             >
-              <div className="inline-block w-full max-w-xl p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-lg">
+              <div className="inline-block w-full max-w-2xl p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-lg">
                 <Dialog.Title as="h2" className="font-bold text-2xl leading-6 text-gray-900">
                   {modify ? 'Edit field' : 'Add a field'}
                 </Dialog.Title>
@@ -183,10 +184,11 @@ const FieldsModal = ({
                       </div>
                     ) : type.value == 'multiple-choice' ? (
                       <div>
-                        <h2 className="text-lg my-3 font-bold tracking-wide uppercase text-teal-800">
-                          Multiple Choice
-                        </h2>
-                        <div>Currently in the works...</div>
+                        <MultipleChoice
+                          label="Multiple Choice"
+                          questionRef={fieldQuestion}
+                          defaultValue={modify ? modifyFieldData.question : ''}
+                        />
                       </div>
                     ) : null}
                   </div>

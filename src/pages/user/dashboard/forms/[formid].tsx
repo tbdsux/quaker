@@ -13,7 +13,7 @@ import { UserLoading } from '@components/loading/user';
 import { fetcher } from '@lib/fetcher';
 import { useUser } from '@lib/wrapper/useUser';
 import { withPageAuthRequired } from '@lib/wrapper/withPageAuth';
-import { FieldsReducer, InitFields } from '@lib/fields-reducer';
+import { FieldsReducer, InitFields } from '@lib/reducers/fields-reducer';
 
 import { joinFormUrl, PROJECT_SITE } from '@utils/site';
 import { FieldDataProps, FormDataProps } from 'types/forms';
