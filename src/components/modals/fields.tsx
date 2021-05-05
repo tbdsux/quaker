@@ -93,7 +93,7 @@ const FieldsModal = ({
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
             >
-              <div className="inline-block w-full max-w-2xl p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-lg">
+              <div className="inline-block w-full max-w-2xl p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-teal-50 shadow-xl rounded-lg">
                 <Dialog.Title as="h2" className="font-bold text-2xl leading-6 text-gray-900">
                   {modify ? 'Edit field' : 'Add a field'}
                 </Dialog.Title>
@@ -167,7 +167,7 @@ const FieldsModal = ({
                   </div>
                   <hr className="my-4" />
 
-                  <div className="p-5 border-teal-500 border shadow-md rounded-md">
+                  <div className="p-5 bg-white border-teal-500 border shadow-md rounded-md">
                     {type.value == 'user-input' ? (
                       <StringInputField
                         label="User Input"

@@ -18,7 +18,7 @@ import { FieldsReducer, InitFields } from '@lib/reducers/fields-reducer';
 import { joinFormUrl, PROJECT_SITE } from '@utils/site';
 import { FieldDataProps, FormDataProps } from 'types/forms';
 
-import { SaveIcon } from '@heroicons/react/outline';
+import { SaveIcon, TrashIcon, UploadIcon } from '@heroicons/react/outline';
 import { useHasMounted } from '@lib/hooks/useHasMounted';
 
 const ModifyForm = withPageAuthRequired(() => {
@@ -147,7 +147,7 @@ const ModifyForm = withPageAuthRequired(() => {
                     setModifyMode(false);
                     setFieldModal(true);
                   }}
-                  className="bg-coolGray-500 hover:bg-coolGray-600 text-white py-2 px-8 tracking-wide border-coolGray-500"
+                  className="bg-teal-500 hover:bg-teal-600 text-white py-2 px-8 tracking-wide border-teal-500 rounded-md"
                 >
                   Add Field
                 </button>
@@ -162,7 +162,7 @@ const ModifyForm = withPageAuthRequired(() => {
 
             <hr className="my-6" />
 
-            <div className="bg-gray-100 rounded-md p-8 relative">
+            <div className="shadow-lg border rounded-md p-8 relative">
               {/* use manual form update */}
               <button
                 className="disabled:opacity-70 absolute top-0 right-0 mt-2 mr-2 inline-flex bg-teal-400 hover:bg-teal-500 p-2 rounded-md text-white text-sm"
@@ -185,15 +185,17 @@ const ModifyForm = withPageAuthRequired(() => {
                             setModifyMode(true);
                             setModifyField(field);
                           }}
-                          className="mx-1 text-sm underline tracking-wide"
+                          title="Update Field"
+                          className="p-1 rounded border tracking-wide"
                         >
-                          modify
+                          <UploadIcon className="h-4 w-4" />
                         </button>
                         <button
                           onClick={() => handleRemoveFormField(field)}
-                          className="mx-1 text-sm font-light tracking-wide text-red-500 hover:text-red-600"
+                          title="Remove Field"
+                          className="ml-1 p-1 rounded border font-light tracking-wide text-red-500 hover:text-red-600"
                         >
-                          remove
+                          <TrashIcon className="h-4 w-4" />
                         </button>
                       </div>
                     </div>
